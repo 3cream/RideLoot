@@ -1,0 +1,500 @@
+<div class="ribbon" role="note">Preview build. Placeholder prizes, no payments, no real winners.</div>
+
+<header class="hdr" id="hdr">
+  <div class="hdr__bar">
+    <a class="brand" href="#top" aria-label="RideLoot, back to top">
+      <img src="assets/wordmark.webp" alt="RideLoot" width="590" height="144">
+    </a>
+    <nav class="hdr__links" aria-label="Page sections">
+      <a href="#pack">Packs</a>
+      <a href="#prize">The prize</a>
+      <button type="button" data-open="pullsDlg">My pulls</button>
+    </nav>
+    <div class="hdr__right">
+      <a class="hdr__pill" href="#free-packs">Free packs</a>
+      <button class="hdr__packs" id="packChip" type="button" aria-label="Your packs"><span class="hdr__packico" aria-hidden="true"></span><span id="chipWord">Packs</span><b id="chipCount">0</b></button>
+      <button class="hdr__icon hdr__menu" type="button" data-open="menuDlg" aria-label="Menu">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ hero ============ -->
+<section class="hero" id="top" aria-labelledby="heroTitle">
+  <div class="hero__frame hero__photo">
+    <picture>
+      <source media="(max-width:860px), (max-aspect-ratio:1/1)" srcset="assets/m3-m.webp" width="1126" height="1397">
+      <img src="assets/m3.webp" alt="The grand prize: a white BMW M3 parked in a garage lit by red ceiling lights" width="1689" height="2096" fetchpriority="high">
+    </picture>
+  </div>
+  <div class="hero__shade" aria-hidden="true"></div>
+  <h1 class="hero__h1" id="heroTitle"><span class="hero__l1 t-chrome">Rip the pack.</span> <span class="hero__l2"><span class="t-loot">Pull the keys.</span></span></h1>
+  <div class="hero__frame hero__car" aria-hidden="true">
+    <picture>
+      <source media="(max-width:860px), (max-aspect-ratio:1/1)" srcset="assets/m3-car-m.webp" width="1126" height="1397">
+      <img src="assets/m3-car.webp" alt="" width="1689" height="2096">
+    </picture>
+  </div>
+  <canvas class="hero__dust" id="dust" aria-hidden="true"></canvas>
+  <div class="hero__pack" id="heroPack" role="button" tabindex="0" aria-label="Get your free pack">
+    <span class="hero__halo" aria-hidden="true"></span>
+    <div class="hero__packin" data-pack3d data-freepack></div>
+    <span class="hero__tag" id="heroTag" aria-hidden="true" hidden><b>Rip me</b><svg viewBox="0 0 44 38" aria-hidden="true"><path d="M40 3C37 19 26 28 7 30"/><path d="M16 21 6 30l12 5"/></svg></span>
+  </div>
+  <div class="hero__copy">
+    <p class="hero__lede">Every pack holds one prize card. Pack No. 10,000 holds the keys to this BMW M3. Your first pack is free.</p>
+    <div class="hero__btns">
+      <button class="btn" type="button" data-cta><span data-cta-label>Get my free pack</span></button>
+    </div>
+    <p class="fine npn"><span class="npn__main">No purchase necessary. All states excluding FL and NY.</span></p>
+  </div>
+  <a class="spin" href="#pack" aria-label="Scroll to the pack">
+    <svg class="spin__ring" viewBox="0 0 100 100" aria-hidden="true"><defs><path id="spinPath" d="M50 50m-38 0a38 38 0 1 1 76 0a38 38 0 1 1-76 0"/></defs><text><textPath href="#spinPath" textLength="234">Scroll &#183; See the pack &#183; Scroll &#183; See the pack &#183;</textPath></text></svg>
+    <span class="spin__arrow"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg></span>
+  </a>
+</section>
+
+<div class="bands" aria-hidden="true">
+  <div class="band band--back"><div class="band__track" id="bandBack"></div></div>
+  <div class="band band--front"><div class="band__track" id="bandFront"></div></div>
+</div>
+
+<!-- ============ the pack ============ -->
+<section class="sec" id="pack">
+  <div class="wrap">
+    <div class="sec__head">
+      <div>
+        <p class="eyebrow eyebrow--big">Packs</p>
+        <h2 class="display"><span>One pack.</span><span class="t-chrome">One prize.</span></h2>
+      </div>
+    </div>
+    <div class="pgrid">
+      <article class="pcard pcard--big">
+        <div class="viewer" id="packViewer" data-viewer>
+          <span class="viewer__tag">RL / Pack</span>
+          <button class="chip chip--chrome viewer__chip viewer__chip--btn" type="button" data-open="insideDlg">See what's inside</button>
+          <span class="viewer__mark viewer__mark--a" aria-hidden="true"></span><span class="viewer__mark viewer__mark--b" aria-hidden="true"></span>
+          <div class="viewer__pack"><div data-pack3d></div><span class="viewer__floor" aria-hidden="true"></span></div>
+          <span class="chip viewer__hint">3D &#183; drag to rotate</span>
+        </div>
+        <div class="pcard__info">
+          <div class="pcard__row">
+            <div>
+              <p class="pcard__series">Series 1</p>
+              <h3 class="pcard__name">RideLoot Pack</h3>
+              <p class="pcard__meta pcard__meta--note">Digital wallpaper instantly delivered with each purchase</p>
+            </div>
+            <button class="pill pill--price" type="button" data-open="productDlg" aria-label="Buy the RideLoot Pack"><span data-price>$10</span></button>
+          </div>
+        </div>
+      </article>
+
+      <article class="pcard pcard--big">
+        <div class="viewer viewer--free" data-viewer>
+          <span class="viewer__tag">RL / First pack</span>
+          <button class="chip chip--chrome viewer__chip viewer__chip--btn" type="button" data-open="insideDlg">See what's inside</button>
+          <span class="viewer__mark viewer__mark--a" aria-hidden="true"></span><span class="viewer__mark viewer__mark--b" aria-hidden="true"></span>
+          <div class="viewer__pack"><div data-pack3d data-free="1"></div><span class="viewer__floor" aria-hidden="true"></span></div>
+          <span class="chip viewer__hint">3D &#183; drag to rotate</span>
+        </div>
+        <div class="pcard__info">
+          <div class="pcard__row">
+            <div>
+              <p class="pcard__series">Series 1</p>
+              <h3 class="pcard__name">Your first pack</h3>
+              <p class="pcard__meta pcard__meta--note">Free with email signup</p>
+            </div>
+            <button class="pill pill--price" id="firstBtn" type="button" aria-label="Claim your free pack"><span id="firstLabel">Free</span></button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ the prize: pinned gallery ============ -->
+<section class="stage" id="prize" aria-labelledby="prizeTitle">
+  <div class="stage__pin is-open" id="stagePin">
+    <h2 class="sr-only" id="prizeTitle">The prize: BMW M3</h2>
+    <div class="stage__word" id="stageWord" aria-hidden="true">BMW M3 <i></i> Grand prize <i></i> BMW M3 <i></i> Grand prize</div>
+    <div class="stage__panel">
+      <figure class="slide slide--fit is-on" data-cap="The grand prize">
+        <img class="slide__fill" src="assets/m3-studio-34.webp" alt="" width="1650" height="2140" loading="lazy">
+        <img class="slide__cover" src="assets/m3-studio-34.webp" alt="White BMW M3 in a white showroom, front three-quarter view" width="1650" height="2140" loading="lazy" style="object-position:50% 97%">
+      </figure>
+      <figure class="slide slide--fit" data-cap="Front">
+        <img class="slide__fill" src="assets/m3-studio-front.webp" alt="" width="1647" height="2150" loading="lazy">
+        <img class="slide__cover" src="assets/m3-studio-front.webp" alt="The BMW M3 seen head-on" width="1647" height="2150" loading="lazy" style="object-position:50% 88%">
+      </figure>
+      <figure class="slide slide--fit" data-cap="Passenger side">
+        <img class="slide__fill" src="assets/m3-studio-34b.webp" alt="" width="1660" height="2043" loading="lazy">
+        <img class="slide__cover" src="assets/m3-studio-34b.webp" alt="The BMW M3 from the passenger side, front three-quarter view" width="1660" height="2043" loading="lazy" style="object-position:50% 95%">
+      </figure>
+      <figure class="slide slide--fit" data-cap="In the garage">
+        <img class="slide__fill" src="assets/m3-garage.webp" alt="" width="1642" height="2872" loading="lazy">
+        <img class="slide__cover" src="assets/m3-garage.webp" alt="The BMW M3 parked in a concrete garage, front three-quarter view" width="1642" height="2872" loading="lazy" style="object-position:50% 66%">
+      </figure>
+      <figure class="slide slide--fit" data-cap="Side profile">
+        <img class="slide__fill" src="assets/m3-side.webp" alt="" width="1629" height="2172" loading="lazy">
+        <img class="slide__cover" src="assets/m3-side.webp" alt="The BMW M3 in profile at a fuel station at night" width="1629" height="2172" loading="lazy" style="object-position:50% 72%">
+      </figure>
+      <figure class="slide" data-cap="After dark">
+        <img class="slide__cover" src="assets/m3.webp" alt="The BMW M3 parked under red ceiling lights" width="1689" height="2096" loading="lazy" style="object-position:50% 64%">
+      </figure>
+      <figure class="slide slide--fit" data-cap="Interior">
+        <img class="slide__fill" src="assets/m3-interior.webp" alt="" width="1728" height="2304" loading="lazy">
+        <img class="slide__cover" src="assets/m3-interior.webp" alt="The front seats of the BMW M3, blue with yellow edging and M3 badges" width="1728" height="2304" loading="lazy" style="object-position:50% 21%">
+      </figure>
+    </div>
+    <div class="stage__hud" aria-hidden="true">
+      <span class="stage__n" id="stageN">01</span><span class="stage__of" id="stageOf">/ 07</span><span class="stage__cap" id="stageCap">The grand prize</span>
+      <span class="stage__bar"><i id="stageBar"></i></span>
+      <span class="chip stage__chip">BMW M3</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============ what's inside: the prize sheet ============ -->
+<section class="sec" id="inside">
+  <div class="wrap">
+    <div class="sec__head">
+      <div>
+        <p class="eyebrow eyebrow--big">Prize sheet / Series 01</p>
+        <h2 class="display display--line"><span>What's</span> <span class="t-chrome">inside</span></h2>
+      </div>
+      <p class="lede"><span id="sheetCount">7</span> prizes, one per pack. Scroll to see each one and its odds.</p>
+    </div>
+    <div class="sheet">
+      <div class="sheet__view" id="sheetView" data-tier="grand">
+        <div class="sheet__card" id="sheetCard"></div>
+        <p class="sheet__cap"><b id="sheetN">01</b><span id="sheetOf">/ 07</span><span id="sheetName">BMW M3</span></p>
+      </div>
+      <ol class="sheet__list" id="sheetList"></ol>
+    </div>
+    <p class="fine sheet__note">Example prizes and odds for this preview. Your real prize list and odds replace them before launch.</p>
+  </div>
+</section>
+
+<!-- ============ last call ============ -->
+<section class="sec sec--tight">
+  <div class="wrap">
+    <div class="final">
+      <p class="pcard__series final__series">Series 1</p>
+      <h2 class="display"><span>Your pack</span><span>is sealed.</span><span class="t-loot">Go rip it.</span></h2>
+      <p class="lede">One prize inside. The first pack is free.</p>
+      <button class="btn" type="button" data-cta><span data-cta-label>Get my free pack</span></button>
+      <p class="fine npn">No purchase necessary. All states excluding FL and NY.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ questions ============ -->
+<section class="sec" id="faq">
+  <div class="wrap faq">
+    <div class="faq__head">
+      <p class="eyebrow eyebrow--big">Questions</p>
+      <h2 class="display display--md"><span>Quick</span><span class="t-chrome">answers</span></h2>
+      <button class="btn btn--sm btn--ghost" type="button" data-open="rulesDlg"><span>Official rules</span></button>
+    </div>
+    <div class="faq__list">
+      <details class="acc"><summary>Do I have to buy anything?</summary><div class="acc__body">No. Your first pack is free with your email, and you can get more free packs by emailing us for a code. See "Free packs" below. Free packs and paid packs are the same pack with the same odds.</div></details>
+      <details class="acc"><summary>How many prizes are in a pack?</summary><div class="acc__body">One. Every pack holds exactly one prize card.</div></details>
+      <details class="acc"><summary>What are the odds?</summary><div class="acc__body"><p>They're posted for every prize in the prize sheet above.</p><ul class="faqodds" id="faqOdds"></ul></div></details>
+      <details class="acc"><summary>What comes with a paid pack?</summary><div class="acc__body">A digital RideLoot wallpaper with a value of $15 is delivered with each pack. It comes with a RideLoot pack you can open for a guaranteed chance to win entries for the final draw.</div></details>
+      <details class="acc"><summary>Who can play?</summary><div class="acc__body">Legal residents of the 50 United States and Washington, D.C., who are 18 or older. Residents of Florida and New York can't take part.</div></details>
+      <details class="acc" id="free-packs"><summary>Free packs</summary><div class="acc__body">
+        <p>No purchase necessary. Email <span class="email" data-free-email>freepack@yourdomain.com</span> and ask for a free pack code. We reply with a single-use code. Same pack, same odds and the same limit as buying.</p>
+        <p><button class="linkbtn" id="copyBtn" type="button">Copy the email address</button></p>
+        <form class="field" id="codeForm" novalidate>
+          <label for="codeInput">Free pack code</label>
+          <input class="input input--code" id="codeInput" name="code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder="Enter code">
+          <button class="btn btn--sm" type="submit"><span>Redeem</span></button>
+        </form>
+        <p class="formmsg" id="codeMsg" aria-live="polite"></p>
+        <p class="fine">Preview code: <strong>FREEPACK</strong>. Placeholder email address. Live codes are single-use and checked on a server.</p>
+      </div></details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__box">
+      <h2 class="foot__h">Get the winners list</h2>
+      <p class="lede">Leave your email and we'll send the winners list when the giveaway ends.</p>
+      <form class="field" id="notifyForm" novalidate>
+        <label class="sr-only" for="notifyEmail">Your email address</label>
+        <input class="input" id="notifyEmail" name="email" type="email" autocomplete="email" placeholder="your email address">
+        <button class="btn btn--sm" type="submit"><span>Notify me</span></button>
+      </form>
+      <label class="check"><input type="checkbox" id="notifyOk"><span>I agree to get emails from RideLoot. I can unsubscribe at any time.</span></label>
+      <p class="formmsg" id="notifyMsg" aria-live="polite"></p>
+    </div>
+    <div class="foot__cols">
+      <nav aria-label="Explore">
+        <h3 class="foot__t">Explore</h3>
+        <a href="#pack">Packs</a>
+        <a href="#prize">The prize</a>
+        <a href="#inside">What's inside</a>
+        <a href="#free-packs">Free packs</a>
+        <button type="button" data-open="pullsDlg">My pulls</button>
+      </nav>
+      <nav aria-label="Information">
+        <h3 class="foot__t">Information</h3>
+        <button type="button" data-open="rulesDlg">Official rules</button>
+        <button type="button" data-open="termsDlg">Terms</button>
+        <button type="button" data-open="privacyDlg">Privacy</button>
+        <button type="button" data-open="shippingDlg">Shipping and returns</button>
+        <a href="mailto:rideloot@gmail.com">Contact</a>
+      </nav>
+    </div>
+    <p class="foot__legal">No purchase necessary. A purchase will not increase your chances of winning. Open to legal residents of the 50 United States and Washington, D.C., 18 or older, excluding residents of Florida and New York. Void in Florida, New York and where prohibited. Sponsor: TropicalTorque LLC, 3211 44th St SW, Lehigh Acres, FL 33976. RideLoot is not affiliated with, sponsored by or endorsed by BMW AG. BMW and M3 are trademarks of BMW AG.</p>
+    <div class="foot__end">
+      <span>&copy; 2026 RideLoot</span>
+      <details class="tools">
+        <summary>Preview tools</summary>
+        <div class="tools__row">
+          <button class="btn btn--sm btn--ghost" id="addPacksBtn" type="button"><span>Add 5 packs</span></button>
+          <label for="forceSel">Next pack holds</label>
+          <select id="forceSel">
+            <option value="random">A random prize</option>
+            <option value="common">A common prize</option>
+            <option value="uncommon">An uncommon prize</option>
+            <option value="rare">A rare prize</option>
+            <option value="epic">An epic prize</option>
+            <option value="legendary">A legendary prize</option>
+            <option value="grand">The BMW M3</option>
+          </select>
+          <button class="linkbtn" id="resetBtn" type="button">Reset preview</button>
+        </div>
+      </details>
+    </div>
+  </div>
+</footer>
+
+<button class="fab" id="fab" type="button" data-cta>
+  <span class="fab__ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="1.500"/><path d="M3 7h18v3H3zM12 7v13M12 7C10.500 3.500 6 4 7.500 7M12 7c1.500-3.500 6-3 4.500 0"/></svg></span>
+  <span class="fab__txt"><b id="fabT">Free pack</b><span id="fabS">Enter your email to claim it</span></span>
+</button>
+
+<!-- ============ dialogs ============ -->
+<dialog class="dlg gate" id="gateDlg" aria-labelledby="gateTitle">
+  <button class="dlg__x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <div class="gate__grid">
+    <div class="gate__text">
+      <p class="eyebrow eyebrow--big">Free pack</p>
+      <h2 class="display display--md" id="gateTitle"><span>Your first pack</span><span class="t-loot">is free.</span></h2>
+      <p class="lede">Enter your email and rip it right now. One prize inside.</p>
+      <form class="field" id="gateForm" novalidate>
+        <label class="sr-only" for="gateEmail">Your email address</label>
+        <input class="input" id="gateEmail" name="email" type="email" autocomplete="email" inputmode="email" placeholder="your email address">
+        <button class="btn btn--sm" type="submit"><span>Get my free pack</span></button>
+      </form>
+      <p class="formmsg" id="gateMsg" aria-live="polite"></p>
+      <p class="fine">No purchase necessary. U.S. residents 18 or older, except Florida and New York. By continuing you agree to the <button class="linkbtn" type="button" data-open="rulesDlg">official rules</button> and to get emails from RideLoot.</p>
+      <p class="fine gate__preview">Preview: your email stays on this page and isn't sent anywhere.</p>
+    </div>
+    <div class="gate__art" aria-hidden="true"><div class="gate__pack" id="gatePack" data-pack3d data-free="1"></div></div>
+  </div>
+</dialog>
+
+<dialog class="dlg pv" id="productDlg" aria-labelledby="pvTitle">
+  <div class="pv__in">
+    <div class="pv__top">
+      <p class="crumbs"><button class="linkbtn" type="button" data-close>Home</button><span>/</span><span>Packs</span><span>/</span><b>RideLoot Pack</b></p>
+      <button class="dlg__x dlg__x--in" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    </div>
+    <div class="pv__grid">
+      <div class="viewer viewer--lg" id="pvViewer" data-viewer>
+        <span class="viewer__tag">RL / Pack</span>
+        <button class="chip chip--chrome viewer__chip viewer__chip--btn" type="button" data-open="insideDlg">See what's inside</button>
+        <span class="viewer__mark viewer__mark--a" aria-hidden="true"></span><span class="viewer__mark viewer__mark--b" aria-hidden="true"></span>
+        <div class="viewer__pack"><div data-pack3d></div><span class="viewer__floor" aria-hidden="true"></span></div>
+        <span class="chip viewer__hint">3D &#183; drag to rotate</span>
+      </div>
+      <div class="pv__info">
+        <p class="pcard__series">Series 1</p>
+        <h2 class="display display--md display--line" id="pvTitle"><span>RideLoot</span> <span class="t-chrome">Pack</span></h2>
+        <p class="pv__price"><span class="pv__amt" data-price>$10</span><small>per pack</small></p>
+        <p class="pv__desc">A digital wallpaper is delivered by email with every pack purchase. Each pack opened contains 1 prize card.</p>
+        <fieldset class="qty" id="qty">
+          <legend>Packs</legend>
+          <label><input type="radio" name="qty" value="1" checked><span>1</span></label>
+          <label><input type="radio" name="qty" value="3"><span>3</span></label>
+          <label><input type="radio" name="qty" value="5"><span>5</span></label>
+          <label><input type="radio" name="qty" value="10"><span>10</span></label>
+        </fieldset>
+        <button class="btn btn--wide" id="buyBtn" type="button"><span id="buyLabel">Purchase 1 pack</span></button>
+        <p class="formmsg" id="buyMsg" aria-live="polite"></p>
+        <button class="btn btn--sm btn--ghost" id="buyRip" type="button" hidden><span>Rip a pack now</span></button>
+        <details class="acc acc--flat"><summary>What is instantly delivered</summary><div class="acc__body">A digital wallpaper, sent to your email as soon as your purchase goes through.</div></details>
+        <details class="acc acc--flat" id="pvCodeAcc"><summary>Email Exclusive Code</summary><div class="acc__body pv__code">
+          <form class="field" id="pvCodeForm" novalidate>
+            <label class="sr-only" for="pvCodeInput">Email exclusive code</label>
+            <input class="input input--code" id="pvCodeInput" name="code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="24" placeholder="Enter code">
+            <button class="btn btn--sm" type="submit"><span>Claim</span></button>
+          </form>
+          <p class="formmsg" id="pvCodeMsg" aria-live="polite"></p>
+          <p class="pv__npn"><a href="#free-packs" data-close>No purchase necessary</a></p>
+        </div></details>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="dlg pv inside" id="insideDlg" aria-labelledby="insideTitle">
+  <button class="dlg__x dlg__x--in" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <div class="inside__wrap">
+    <p class="eyebrow eyebrow--big">Series 1</p>
+    <h2 class="display display--md display--line" id="insideTitle"><span>What's</span> <span class="t-chrome">inside</span></h2>
+    <p class="lede">Every pack holds one of these prize cards. The odds are per pack.</p>
+    <div class="inside__grid" id="insideGrid"></div>
+    <p class="fine">Example prizes and odds for this preview. No purchase necessary. All states excluding FL and NY.</p>
+    <p class="inside__cta"><button class="btn btn--sm" type="button" data-cta><span data-cta-label>Get my free pack</span></button> <button class="btn btn--sm btn--ghost" type="button" data-close><span>Back</span></button></p>
+  </div>
+</dialog>
+
+<dialog class="dlg sheetdlg" id="rulesDlg" aria-labelledby="rulesTitle">
+  <button class="dlg__x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <p class="eyebrow eyebrow--big">Placeholder summary</p>
+  <h2 class="display display--md" id="rulesTitle"><span>Official rules</span></h2>
+  <p class="lede">The official rules your attorney approves go here.</p>
+  <dl class="rules">
+    <dt>Who can play</dt><dd>Legal residents of the 50 United States and Washington, D.C., 18 or older. Not open to residents of Florida or New York. Void in Florida, New York and where prohibited.</dd>
+    <dt>When</dt><dd>Starts <span class="ph">start date</span>.</dd>
+    <dt>How to get packs</dt><dd>One free pack with your email. After that, buy a pack or request a free code by email. Limit <span class="ph">number</span> packs per person per day, whichever way you get them. Every paid pack comes with a digital wallpaper, delivered by email.</dd>
+    <dt>Prizes and odds</dt><dd>One prize per pack. See the prize sheet for the odds of each prize. Grand prize: <span class="ph">year and trim</span> BMW M3, approximate retail value <span class="ph">value</span>.</dd>
+    <dt>How the car is won</dt><dd>The M3 card is in the 10,000th pack opened, counting free and paid packs alike. No earlier pack holds it. Every other card carries entries in a final draw, as listed on the prize sheet. If pack No. 10,000 has not been opened by the end date, one entry is drawn at random, so the car is always awarded. Odds in the final draw depend on the number of entries.</dd>
+    <dt>Winners list</dt><dd>Sent on request. Mail a self-addressed stamped envelope to the Sponsor address below within 60 days after the giveaway ends.</dd>
+    <dt>Sponsor</dt><dd>TropicalTorque LLC, 3211 44th St SW, Lehigh Acres, FL 33976. Not affiliated with, sponsored by or endorsed by BMW AG.</dd>
+  </dl>
+</dialog>
+
+<dialog class="dlg sheetdlg" id="termsDlg" aria-labelledby="termsDlgTitle">
+  <button class="dlg__x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <p class="eyebrow eyebrow--big">Draft for attorney review</p>
+  <h2 class="display display--md" id="termsDlgTitle"><span>Terms of service</span></h2>
+  <p class="lede">Effective November 22, 2026. These terms cover your use of RideLoot and anything you buy here.</p>
+  <dl class="rules">
+    <dt>Who we are</dt><dd>RideLoot is operated by TropicalTorque LLC, 3211 44th St SW, Lehigh Acres, FL 33976. Contact: <a class="mail" href="mailto:rideloot@gmail.com">rideloot@gmail.com</a> or (239) 823-2376.</dd>
+    <dt>Who can use the site</dt><dd>You must be 18 or older and a legal resident of the 50 United States or Washington, D.C. The site is not open to residents of Florida or New York.</dd>
+    <dt>What you are buying</dt><dd>Each purchase is a digital RideLoot wallpaper, delivered to your email. Each purchase also comes with a RideLoot pack you can open on the site. Nothing physical is shipped.</dd>
+    <dt>Packs, entries and the grand prize</dt><dd>Packs, entries, odds, the final draw and the grand prize are governed by the Official rules, which are part of these terms. No purchase is necessary to get a pack. Free packs and paid packs are the same pack with the same odds.</dd>
+    <dt>Prices and payment</dt><dd>Prices are in U.S. dollars. Payment is handled by our payment processor. You agree to pay the price shown at checkout, plus any tax that applies.</dd>
+    <dt>All sales are final</dt><dd>Every product is digital and is delivered at once, so all sales are final. There are no refunds, returns, exchanges or cancellations, except where the law requires one. See Shipping and returns.</dd>
+    <dt>Your license to the wallpaper</dt><dd>The wallpaper is for your personal, non-commercial use. You may not resell it, share it publicly, or use it in anything you sell. We keep all rights in the artwork, the RideLoot name and the site.</dd>
+    <dt>Codes and fair play</dt><dd>One account per person. Email codes are single use and cannot be sold or transferred. Entries made with bots, scripts, false details or more than one account are void, and we may close the account.</dd>
+    <dt>Things you agree not to do</dt><dd>Do not interfere with the site, try to change pack results, copy the site, or use it for anything unlawful.</dd>
+    <dt>Brand names</dt><dd>RideLoot is not affiliated with, sponsored by or endorsed by BMW AG. Brand names belong to their owners.</dd>
+    <dt>Disclaimers and limits</dt><dd><span class="ph">Warranty disclaimer and limit of liability, from your attorney</span></dd>
+    <dt>Disputes and governing law</dt><dd>These terms are governed by the laws of the State of Florida. <span class="ph">How disputes are handled, from your attorney</span></dd>
+    <dt>Changes</dt><dd>We may update these terms. The date at the top shows the latest version. Using the site after a change means you accept it.</dd>
+  </dl>
+</dialog>
+
+<dialog class="dlg sheetdlg" id="privacyDlg" aria-labelledby="privacyDlgTitle">
+  <button class="dlg__x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <p class="eyebrow eyebrow--big">Draft for attorney review</p>
+  <h2 class="display display--md" id="privacyDlgTitle"><span>Privacy policy</span></h2>
+  <p class="lede">Effective November 22, 2026. This explains what RideLoot collects and what we do with it.</p>
+  <dl class="rules">
+    <dt>What we collect</dt><dd>Your email address. Your state of residence and confirmation that you are 18 or older. Your orders, packs, pulls and entries. Basic device and usage data, such as browser type and pages viewed. If you win, your name, address and the details needed to award the prize.</dd>
+    <dt>Payment details</dt><dd>Card payments are handled by our payment processor. We do not see or store your full card number.</dd>
+    <dt>How we use it</dt><dd>To deliver your wallpaper. To run the giveaway, count entries and check eligibility. To contact and verify winners. To prevent fraud and duplicate accounts. To send RideLoot emails if you agreed to get them.</dd>
+    <dt>Who we share it with</dt><dd>Companies that work for us: payment, email delivery and site hosting. Tax and government agencies where the law requires it, including prize reporting. Law enforcement when we are legally required to. <span class="ph">Confirm with your attorney: we do not sell personal information</span>.</dd>
+    <dt>Winners</dt><dd>A winner's name and state may appear on the winners list, as the Official rules describe. Winners must complete the tax and eligibility paperwork the law requires before a prize is awarded.</dd>
+    <dt>Saved on your device</dt><dd>The site saves your packs and pulls in your browser so they are there when you come back. Clearing your browser data removes them from that device.</dd>
+    <dt>Marketing emails</dt><dd>We only send marketing emails if you opt in. Every email has an unsubscribe link.</dd>
+    <dt>Children</dt><dd>RideLoot is for adults 18 and older. We do not knowingly collect information from anyone under 18.</dd>
+    <dt>Your choices</dt><dd>You can ask us for a copy of your information, or ask us to correct or delete it, by writing to <a class="mail" href="mailto:rideloot@gmail.com">rideloot@gmail.com</a>. We keep records the law requires us to keep, such as order and winner records. <span class="ph">State privacy rights wording, from your attorney</span>.</dd>
+    <dt>How long we keep it</dt><dd><span class="ph">Retention period</span>, or longer where the law requires.</dd>
+    <dt>Changes</dt><dd>We may update this policy. The date at the top shows the latest version.</dd>
+    <dt>Contact</dt><dd>TropicalTorque LLC, 3211 44th St SW, Lehigh Acres, FL 33976. Email: <a class="mail" href="mailto:rideloot@gmail.com">rideloot@gmail.com</a>. Phone: (239) 823-2376</dd>
+  </dl>
+</dialog>
+
+<dialog class="dlg sheetdlg" id="shippingDlg" aria-labelledby="shippingDlgTitle">
+  <button class="dlg__x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <p class="eyebrow eyebrow--big">Draft for attorney review</p>
+  <h2 class="display display--md" id="shippingDlgTitle"><span>Shipping and returns</span></h2>
+  <p class="lede">Effective November 22, 2026. Everything RideLoot sells is digital.</p>
+  <dl class="rules">
+    <dt>Nothing is shipped</dt><dd>All products are digital. There is no physical delivery and no shipping charge.</dd>
+    <dt>Delivery</dt><dd>Your digital wallpaper is sent to the email address you gave at checkout as soon as your purchase goes through. Your packs are added to your account at the same time.</dd>
+    <dt>All sales are final</dt><dd>Because every product is digital and delivered at once, all sales are final. There are no refunds, no returns, no exchanges and no cancellations, except where the law requires one.</dd>
+    <dt>Opened packs</dt><dd>A pack cannot be returned, exchanged or reopened, whatever card it holds.</dd>
+    <dt>Did not get your email?</dt><dd>Check your spam or promotions folder first. If it is not there, write to <a class="mail" href="mailto:rideloot@gmail.com">rideloot@gmail.com</a> with the email address you used and we will send it again.</dd>
+    <dt>Charged by mistake?</dt><dd>If you were charged twice or for the wrong amount, write to <a class="mail" href="mailto:rideloot@gmail.com">rideloot@gmail.com</a> and we will correct it.</dd>
+    <dt>The grand prize</dt><dd>Delivery or pickup of the grand prize is covered in the Official rules.</dd>
+  </dl>
+</dialog>
+
+<dialog class="dlg drawer" id="pullsDlg" aria-labelledby="pullsTitle">
+  <button class="dlg__x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <p class="eyebrow eyebrow--big">On this device</p>
+  <h2 class="display display--md" id="pullsTitle"><span>My pulls</span></h2>
+  <div class="stats">
+    <div><span class="stat__n t-chrome" id="statOpened">0</span><span class="stat__l">packs opened</span></div>
+    <div><span class="stat__n t-chrome" id="statEntries">0</span><span class="stat__l">entries in the final draw</span></div>
+    <div><span class="stat__n t-chrome" id="statPacks">0</span><span class="stat__l">packs ready to rip</span></div>
+  </div>
+  <div id="pulls"></div>
+  <p class="drawer__cta"><button class="btn btn--sm" type="button" data-cta><span data-cta-label>Get my free pack</span></button></p>
+  <p class="fine npn drawer__npn">No purchase necessary. All states excluding FL and NY.</p>
+</dialog>
+
+<dialog class="dlg menu" id="menuDlg" aria-label="Menu">
+  <button class="dlg__x" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <nav class="menu__links" aria-label="Page sections">
+    <a href="#pack" data-close>Packs</a>
+    <a href="#prize" data-close>The prize</a>
+    <a href="#inside" data-close>What's inside</a>
+    <a href="#free-packs" data-close>Free packs</a>
+    <button type="button" data-open="pullsDlg">My pulls</button>
+    <button type="button" data-open="rulesDlg">Official rules</button>
+  </nav>
+</dialog>
+
+<!-- ============ the rip room ============ -->
+<div class="rip" id="rip" role="dialog" aria-modal="true" aria-label="Pack opening" aria-hidden="true" hidden>
+  <div class="rip__bg"></div>
+  <div class="rip__rays"></div>
+  <div class="rip__beam rip__beam--l"></div>
+  <div class="rip__beam rip__beam--r"></div>
+  <div class="rip__floor"></div>
+  <canvas class="rip__fx" id="fx"></canvas>
+  <div class="rip__flash"></div>
+  <p class="chip rip__chip" id="ripChip"></p>
+  <button class="rip__close" id="ripClose" type="button" aria-label="Close">&times;</button>
+  <p class="jackpot t-loot" id="jackpot" aria-hidden="true">You pulled the keys</p>
+  <div class="rip__stage" id="ripStage">
+    <div class="rig" id="rig"></div>
+  </div>
+  <div class="rip__hud">
+    <p class="rip__prompt" id="ripPrompt"><b>Swipe across the top seal</b> to rip it open</p>
+    <button class="btn btn--sm btn--ghost" id="tapRipBtn" type="button"><span>Or tap to rip</span></button>
+    <div class="meterbox" id="ripMeter" hidden>
+      <div class="meter" aria-hidden="true"><span data-tier="common">Common</span><span data-tier="uncommon">Uncommon</span><span data-tier="rare">Rare</span><span data-tier="epic">Epic</span><span data-tier="legendary">Legendary</span><span data-tier="grand">Grand</span></div>
+    </div>
+    <p class="meter__skip rip__skip">Tap anywhere to skip</p>
+    <div class="rip__title" id="ripTitle" hidden>
+      <span class="rip__tier" id="ripTier"></span>
+      <h2 class="rip__name t-chrome" id="ripName"></h2>
+      <p class="rip__note" id="ripNote"></p>
+    </div>
+    <div class="rip__actions" id="ripActions" hidden>
+      <button class="btn btn--sm" id="againBtn" type="button"><span id="againLabel">Rip another pack</span></button>
+      <button class="btn btn--sm btn--ghost" id="doneBtn" type="button"><span>Done</span></button>
+    </div>
+    <p class="fine npn rip__npn" id="againNote" hidden>No purchase necessary. All states excluding FL and NY.</p>
+  </div>
+  <p class="sr-only" id="ripLive" aria-live="assertive"></p>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>

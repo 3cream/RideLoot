@@ -1,0 +1,77 @@
+/* ---------- prize cards, second pass: a foil rim, a header strip, rarity gems, and a finish that gets richer with every tier ---------- */
+[data-tier="common"]{--t2:#6f7c86;--foil:linear-gradient(135deg,#59646c,#dfe6ea 30%,#7b8790 55%,#eef2f4 78%,#59646c)}
+[data-tier="uncommon"]{--t2:#0f9d6a;--foil:linear-gradient(135deg,#0c6e4b,#b9ffe0 28%,#2bcf8d 52%,#e9fff5 76%,#0c6e4b)}
+[data-tier="rare"]{--t2:#1f86d6;--foil:linear-gradient(135deg,#145c98,#d6efff 26%,#48b0ff 50%,#ffffff 74%,#145c98)}
+[data-tier="epic"]{--t2:#5b21b6;--foil:linear-gradient(135deg,#4c1d95,#e3ccff 22%,#a855f7 44%,#f6edff 62%,#7c3aed 82%,#4c1d95)}
+[data-tier="legendary"]{--t2:#b06a00;--foil:linear-gradient(135deg,#8a5200,#fff3b8 20%,#ffc93c 40%,#fffbe6 56%,#ff9d1c 74%,#fff0a8 88%,#8a5200)}
+[data-tier="grand"]{--t2:#7f9cff;--foil:linear-gradient(135deg,#8fd3ff,#ffffff 14%,#b89cff 28%,#ffffff 42%,#ffd98a 56%,#9cffd6 70%,#ffffff 84%,#8fd3ff)}
+.pc__front > .pc__bg{background:
+  radial-gradient(90% 48% at 50% 34%,color-mix(in srgb,var(--tc) 50%,transparent),transparent 70%),
+  radial-gradient(70% 34% at 50% 104%,color-mix(in srgb,var(--t2) 70%,transparent),transparent 72%),
+  repeating-linear-gradient(135deg,rgba(255,255,255,.045) 0 1px,rgba(255,255,255,0) 1px 7px),
+  repeating-linear-gradient(45deg,rgba(0,0,0,.16) 0 1px,rgba(0,0,0,0) 1px 7px),
+  linear-gradient(180deg,color-mix(in srgb,var(--tc) 30%,#0b1116) 0%,#0a0f13 54%,color-mix(in srgb,var(--t2) 34%,#05070a) 100%);
+  box-shadow:inset 0 0 0 .45cqw #000,inset 0 0 14cqw 2cqw rgba(0,0,0,.55)}
+/* the rim: a strip of foil all the way round */
+.pc__front > .pc__foil{inset:.9cqw;border-radius:4.8cqw;padding:1.5cqw;background:var(--foil);background-size:220% 220%;background-position:var(--hx) var(--hy);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+  filter:drop-shadow(0 0 1.6cqw color-mix(in srgb,var(--tc) 70%,transparent));transform:translateZ(6px)}
+.pc__front > .pc__frame{inset:4.6cqw;border-radius:2.8cqw;border:.3cqw solid color-mix(in srgb,var(--tc) 46%,transparent);
+  background:linear-gradient(var(--tc),var(--tc)) left top/5cqw .7cqw no-repeat,linear-gradient(var(--tc),var(--tc)) left top/.7cqw 5cqw no-repeat,linear-gradient(var(--tc),var(--tc)) right top/5cqw .7cqw no-repeat,linear-gradient(var(--tc),var(--tc)) right top/.7cqw 5cqw no-repeat,linear-gradient(var(--tc),var(--tc)) left bottom/5cqw .7cqw no-repeat,linear-gradient(var(--tc),var(--tc)) left bottom/.7cqw 5cqw no-repeat,linear-gradient(var(--tc),var(--tc)) right bottom/5cqw .7cqw no-repeat,linear-gradient(var(--tc),var(--tc)) right bottom/.7cqw 5cqw no-repeat}
+.pc__front > .pc__rays{inset:0;border-radius:5.5cqw;opacity:0;background:repeating-conic-gradient(from 0deg at 50% 38%,color-mix(in srgb,var(--tc) 50%,transparent) 0 4deg,transparent 4deg 12deg);-webkit-mask-image:radial-gradient(60% 46% at 50% 38%,#000 0,transparent 78%);mask-image:radial-gradient(60% 46% at 50% 38%,#000 0,transparent 78%)}
+.pc__front > .pc__top{left:8%;right:8%;top:6.6%;display:flex !important;justify-content:space-between;align-items:center;font-family:var(--font-display);font-size:4.5cqw;line-height:1;letter-spacing:.14em;text-transform:uppercase;transform:translateZ(20px)}
+.pc__top b{font-style:italic;font-weight:800;color:#fff;opacity:.9}
+.pc__top em{font-style:normal;font-weight:700;letter-spacing:.06em;color:var(--tc);font-variant-numeric:tabular-nums}
+.pc__front > .pc__tier{top:13%;padding:.7cqw 4.2cqw .8cqw;font-family:var(--font-display);font-style:italic;font-weight:800;font-size:6cqw;line-height:1.15;letter-spacing:.08em;text-transform:uppercase;color:#04070a;
+  background:var(--foil);background-size:200% 200%;background-position:var(--hx) var(--hy);box-shadow:inset 0 .3cqw 0 rgba(255,255,255,.6),0 0 0 .35cqw #000,0 1.6cqw 3cqw -1cqw rgba(0,0,0,.9),0 0 4cqw -1cqw var(--tc)}
+.pc__front > .pc__art{top:24%;left:26%;width:48%}
+.pc__front > .pc__artglow{top:17%}
+.pc__front > .pc__art--photo{left:-8%;top:24.5%;width:116%}
+.pc__front > .pc__gems{left:12%;right:12%;bottom:36.6%;display:flex !important;align-items:center;justify-content:center;gap:1.7cqw;transform:translateZ(22px)}
+.pc__gems::before,.pc__gems::after{content:"";flex:1;height:.4cqw;background:linear-gradient(90deg,transparent,var(--tc))}
+.pc__gems::after{background:linear-gradient(270deg,transparent,var(--tc))}
+.pc__gems i{flex:none;width:2.7cqw;height:2.7cqw;transform:rotate(45deg);background:rgba(255,255,255,.08);box-shadow:inset 0 0 0 .3cqw rgba(255,255,255,.22)}
+.pc__gems i.is-on{background:linear-gradient(135deg,#fff,var(--tc) 46%,var(--t2));box-shadow:inset 0 0 0 .25cqw rgba(255,255,255,.75),0 0 2.4cqw var(--tc)}
+.pc__front > .pc__name{bottom:17%;filter:drop-shadow(0 .5cqw 0 rgba(0,0,0,.6))}
+.pc__front > .pc__note{bottom:10.6%;font-size:4.3cqw;letter-spacing:.04em}
+.pc__front > .pc__no{bottom:5.2%;font-size:3.9cqw;letter-spacing:.2em;text-transform:uppercase}
+.pc__front > .pc__holo{opacity:.2}
+.pc__front > .pc__spark{inset:0;border-radius:5.5cqw;opacity:0;pointer-events:none;transform:translateZ(40px);
+  background:radial-gradient(1.6cqw 1.6cqw at 18% 22%,#fff,transparent 70%),radial-gradient(1.1cqw 1.1cqw at 82% 16%,#fff,transparent 70%),radial-gradient(1.4cqw 1.4cqw at 74% 58%,#fff,transparent 70%),radial-gradient(1cqw 1cqw at 24% 66%,#fff,transparent 70%),radial-gradient(1.2cqw 1.2cqw at 52% 88%,#fff,transparent 70%)}
+/* the finish steps up with the tier */
+.pc[data-tier="uncommon"] .pc__holo{opacity:.26}
+.pc[data-tier="rare"] .pc__holo{opacity:.4}
+.pc[data-tier="rare"] .pc__rays{opacity:.22}
+.pc[data-tier="epic"] .pc__holo{opacity:.5;background:linear-gradient(114deg,rgba(176,107,255,0) 12%,rgba(200,150,255,.7) 30%,rgba(255,255,255,.6) 44%,rgba(140,70,255,.75) 58%,rgba(255,130,230,.5) 70%,rgba(140,70,255,0) 84%);background-size:240% 240%;background-position:var(--hx) var(--hy)}
+.pc[data-tier="epic"] .pc__rays{opacity:.4}
+.pc[data-tier="epic"] .pc__spark{opacity:.55;animation:pc-twinkle 2.6s ease-in-out infinite}
+.pc[data-tier="legendary"] .pc__holo{opacity:.55;background:linear-gradient(114deg,rgba(255,201,60,0) 10%,rgba(255,201,60,.75) 28%,rgba(255,255,255,.7) 42%,rgba(255,150,40,.7) 56%,rgba(255,240,170,.6) 70%,rgba(255,201,60,0) 86%);background-size:240% 240%;background-position:var(--hx) var(--hy)}
+.pc[data-tier="legendary"] .pc__rays{opacity:.6;animation:pc-spin 26s linear infinite}
+.pc[data-tier="legendary"] .pc__spark{opacity:.85;animation:pc-twinkle 2s ease-in-out infinite}
+.pc[data-tier="legendary"] .pc__foil{padding:2cqw;animation:pc-foil 5s linear infinite}
+.pc[data-tier="grand"] .pc__holo{opacity:.6;background:linear-gradient(114deg,rgba(255,255,255,0) 8%,rgba(143,211,255,.75) 24%,rgba(184,156,255,.7) 38%,rgba(255,255,255,.75) 50%,rgba(255,217,138,.7) 62%,rgba(156,255,214,.65) 76%,rgba(255,255,255,0) 90%);background-size:240% 240%;background-position:var(--hx) var(--hy)}
+.pc[data-tier="grand"] .pc__rays{opacity:.7;animation:pc-spin 20s linear infinite}
+.pc[data-tier="grand"] .pc__spark{opacity:1;animation:pc-twinkle 1.6s ease-in-out infinite}
+.pc[data-tier="grand"] .pc__foil{padding:2.2cqw;animation:pc-foil 4s linear infinite}
+.pc[data-tier="grand"] .pc__gems{bottom:29.5%}
+.pc[data-tier="grand"] .pc__top em{color:#fff}
+@keyframes pc-spin{to{transform:rotate(360deg)}}
+@keyframes pc-twinkle{0%,100%{opacity:.25;transform:translateZ(40px) scale(.96)}50%{opacity:1;transform:translateZ(40px) scale(1.04)}}
+@keyframes pc-foil{0%{background-position:0% 0%}100%{background-position:220% 220%}}
+@media (prefers-reduced-motion:reduce){.pc__rays,.pc__spark,.pc__foil{animation:none !important}}
+
+/* ---------- rarity tags everywhere: a foil plate with a cut gem, in the headline face ---------- */
+.sheet__tier,.rip__tier{display:inline-flex;align-items:center;gap:.5em;padding:.32em .9em .36em .7em;border-radius:5px;transform:skewX(-9deg);
+  font-family:var(--font-display);font-style:italic;font-weight:800;font-size:1rem;line-height:1;letter-spacing:.1em;text-transform:uppercase;color:#04070a;text-shadow:0 1px 0 rgba(255,255,255,.45);white-space:nowrap;
+  background:var(--foil,var(--tc));background-size:220% 220%;animation:pc-foil 6s linear infinite;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.75),inset 0 -2px 0 rgba(0,0,0,.22),0 0 0 2px #05080a,0 0 0 3px color-mix(in srgb,var(--tc) 70%,transparent),0 0 18px -3px var(--tc)}
+.sheet__tier::before,.rip__tier::before{content:"";flex:none;width:.52em;height:.52em;transform:rotate(45deg);background:#04070a;box-shadow:0 0 0 1.5px rgba(255,255,255,.6)}
+.rip__tier{font-size:1.25rem}
+.sheet__meta .sheet__tier{margin-right:10px;font-size:.9rem}
+.inside__item .sheet__tier{margin:2px 0 0;font-size:.92rem}
+@media (prefers-reduced-motion:reduce){.sheet__tier,.rip__tier{animation:none !important}}
+
+/* a two-word heading kept on one line */
+.display.display--line{white-space:nowrap;text-wrap:nowrap}
+.display.display--line > span{display:inline;padding-right:.06em}
+@media (max-width:400px){.display.display--line:not(.display--md){font-size:clamp(2.5rem,13.5vw,3.1rem)}}

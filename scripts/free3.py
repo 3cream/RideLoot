@@ -1,0 +1,55 @@
+"""Check the moved free-pack route: the pack section without the code card, and the 'Free packs' question at the bottom."""
+import asyncio
+from playwright.async_api import async_playwright
+URL = 'file:///home/claude/rideloot/site/index.html'
+OUT = '/home/claude/rideloot/tmp'
+SEED = "try{sessionStorage.setItem('rl-gate','1')}catch(e){}"
+async def main():
+    async with async_playwright() as p:
+        b = await p.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox'])
+        errs = []
+        ctx = await b.new_context(viewport={'width': 1408, 'height': 790})
+        await ctx.add_init_script(SEED)
+        pg = await ctx.new_page()
+        pg.on('console', lambda m: errs.append((m.type, m.text)) if m.type in ('error', 'warning') else None)
+        pg.on('pageerror', lambda e: errs.append(('pageerror', str(e))))
+        await pg.goto(URL); await pg.wait_for_timeout(900)
+        await pg.evaluate("(() => { const r = document.getElementById('pack').getBoundingClientRect(); window.scrollTo({top: r.top + scrollY + 560, behavior:'instant'}); })()")
+        await pg.wait_for_timeout(800)
+        await pg.screenshot(path=f'{OUT}/fr_1_pack.png')
+        print('small cards in pack section:', await pg.evaluate("document.querySelectorAll('#pack .pgrid > .pcard').length"), '| free-code band present:', await pg.evaluate("!!document.getElementById('free-code')"))
+        await pg.evaluate("window.scrollTo({top:0,behavior:'instant'})"); await pg.wait_for_timeout(500)
+        print('question open before click:', await pg.evaluate("document.getElementById('free-packs').open"))
+        await pg.click('.hdr__pill')
+        await pg.wait_for_timeout(2200)
+        print('after header link -> open:', await pg.evaluate("document.getElementById('free-packs').open"), 'top:', await pg.evaluate("Math.round(document.getElementById('free-packs').getBoundingClientRect().top)"))
+        await pg.screenshot(path=f'{OUT}/fr_2_question.png')
+        await pg.fill('#codeInput', 'nope'); await pg.click('#codeForm button[type=submit]'); await pg.wait_for_timeout(200)
+        print('bad code:', await pg.evaluate("document.getElementById('codeMsg').textContent"))
+        await pg.fill('#codeInput', 'freepack'); await pg.click('#codeForm button[type=submit]'); await pg.wait_for_timeout(200)
+        print('good code:', await pg.evaluate("document.getElementById('codeMsg').textContent"), '| packs:', await pg.evaluate("document.getElementById('chipCount').textContent"))
+        # from the product view
+        await pg.evaluate("document.getElementById('free-packs').open = false; window.scrollTo({top:0,behavior:'instant'})")
+        await pg.evaluate("document.querySelector('#pack [data-open=productDlg]').click()"); await pg.wait_for_timeout(500)
+        await pg.evaluate("document.querySelector('#productDlg a[href=\"#free-packs\"]').click()"); await pg.wait_for_timeout(2200)
+        print('from product view -> dialog open:', await pg.evaluate("document.getElementById('productDlg').open"), 'question open:', await pg.evaluate("document.getElementById('free-packs').open"), 'top:', await pg.evaluate("Math.round(document.getElementById('free-packs').getBoundingClientRect().top)"))
+        await ctx.close()
+        ctx = await b.new_context(viewport={'width': 390, 'height': 844}, device_scale_factor=2, is_mobile=True, has_touch=True)
+        await ctx.add_init_script(SEED)
+        pg = await ctx.new_page()
+        pg.on('console', lambda m: errs.append(('m', m.type, m.text)) if m.type in ('error', 'warning') else None)
+        pg.on('pageerror', lambda e: errs.append(('m-pageerror', str(e))))
+        await pg.goto(URL); await pg.wait_for_timeout(900)
+        await pg.evaluate("(() => { const r = document.querySelector('#pack .pgrid').getBoundingClientRect(); window.scrollTo({top: r.top + scrollY + 330, behavior:'instant'}); })()")
+        await pg.wait_for_timeout(800)
+        await pg.screenshot(path=f'{OUT}/fr_3_m_pack.png')
+        await pg.evaluate("window.scrollTo({top:0,behavior:'instant'})"); await pg.wait_for_timeout(400)
+        await pg.tap('.hdr__menu'); await pg.wait_for_timeout(400)
+        await pg.tap('#menuDlg a[href="#free-packs"]'); await pg.wait_for_timeout(2200)
+        print('phone menu -> question open:', await pg.evaluate("document.getElementById('free-packs').open"), 'top:', await pg.evaluate("Math.round(document.getElementById('free-packs').getBoundingClientRect().top)"))
+        await pg.screenshot(path=f'{OUT}/fr_4_m_question.png')
+        print('overflow-x:', await pg.evaluate('document.documentElement.scrollWidth - document.documentElement.clientWidth'))
+        await ctx.close()
+        print('errors:', [e for e in errs if 'ERR_TUNNEL' not in str(e) and 'fonts.g' not in str(e)] or 'none')
+        await b.close()
+asyncio.run(main())
