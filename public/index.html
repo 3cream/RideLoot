@@ -790,6 +790,11 @@ dialog.inside{padding:0;overflow-y:auto}
 .sheetdlg .eyebrow{padding-right:56px}
 .rules .mail{color:var(--brand-hi);text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
 
+/* live site only */
+.pv__elig{margin:2px 0 0;font-size:.8rem;line-height:1.45;color:var(--muted);max-width:52ch}
+.pv__elig[hidden]{display:none}
+.is-live .tools{display:none}
+
 /* ---------- the rip room ---------- */
 .rip{position:fixed;inset:0;z-index:50;display:grid;grid-template-rows:minmax(0,1fr) auto;overflow:hidden;background:#020304;opacity:0;transition:opacity .28s,--tint .45s;--tint:#b8c4cb}
 .rip.is-in{opacity:1}
@@ -1372,6 +1377,7 @@ dialog.inside{padding:0;overflow-y:auto}
           <label><input type="radio" name="qty" value="5"><span>5</span></label>
           <label><input type="radio" name="qty" value="10"><span>10</span></label>
         </fieldset>
+        <label class="check pv__elig" id="buyOkRow" hidden><input type="checkbox" id="buyOk"><span>I am 18 or older and not a resident of Florida or New York. I agree to the Terms and the Official rules.</span></label>
         <button class="btn btn--wide" id="buyBtn" type="button"><span id="buyLabel">Purchase 1 pack</span></button>
         <p class="formmsg" id="buyMsg" aria-live="polite"></p>
         <button class="btn btn--sm btn--ghost" id="buyRip" type="button" hidden><span>Rip a pack now</span></button>
@@ -1616,7 +1622,33 @@ dialog.inside{padding:0;overflow-y:auto}
     return o;
   }
   function load() { try { const raw = localStorage.getItem(KEY); if (raw) state = clean(JSON.parse(raw)); } catch (e) { /* storage unavailable: run from memory */ } }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ } }
+  function save() { if (LIVE.on) return; try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ } }
+
+  /* ---------- live mode: served with its back end, packs, pulls and the pack count live on the server.
+     Without a back end (the preview) everything above keeps working from this browser alone. ---------- */
+  const LIVE = { on: false, checkout: false, next: 1 };
+  const WKEY = 'rideloot-wallet';
+  let walletToken = '';
+  try { walletToken = localStorage.getItem(WKEY) || ''; } catch (e) { /* storage unavailable */ }
+  async function api(path, data, method) {
+    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 12000);
+    try {
+      const res = await fetch('/api/' + path, {
+        method: method || (data ? 'POST' : 'GET'), cache: 'no-store', signal: ctl.signal,
+        headers: Object.assign({ 'x-wallet': walletToken }, data ? { 'content-type': 'application/json' } : {}),
+        body: data ? JSON.stringify(data) : undefined
+      });
+      let out = null;
+      try { out = await res.json(); } catch (e) { /* not JSON: no back end here */ }
+      return out && typeof out === 'object' ? out : { ok: false, error: 'server' };
+    } catch (e) { return { ok: false, error: 'network' }; } finally { clearTimeout(timer); }
+  }
+  /* the server's word on this visitor replaces whatever the page was holding */
+  function applyWallet(w) {
+    const c = clean({ claimed: w.claimed === true, packs: w.packs, opened: w.opened, pulls: w.pulls, force: 'random' });
+    state.claimed = c.claimed; state.packs = c.packs; state.opened = c.opened; state.pulls = c.pulls; state.force = 'random';
+    if (Number.isFinite(w.next_no)) LIVE.next = w.next_no;
+  }
 
   /* ---------- the draw: one prize per pack ---------- */
   function rand() {
@@ -1866,7 +1898,7 @@ dialog.inside{padding:0;overflow-y:auto}
     if (R) endRun(R); else ripReturn = document.activeElement;
     const ctx = R = { phase: 'enter', prize: null, no: 0, rank: 0, p: 0, dir: 1, drag: null, fast: false, dead: false, done: false, anims: [], timers: [], waiters: [] };
     const from = src ? src.getBoundingClientRect() : null;
-    const no = state.opened + 1;
+    const no = LIVE.on ? LIVE.next : state.opened + 1;   /* live: the next pack in the site-wide count */
     rig.style.setProperty('--p', '0'); rig.style.setProperty('--sx', '0');
     rig.innerHTML = '<div class="rig__glow"></div><div class="rig__ring"></div><div class="rig__shadow"></div><div class="pkrays"></div>' +
       '<div class="rig__body"><div class="pkback"><span class="pkback__crimp"></span><span class="pkback__shade"></span></div>' + cardHTML(null, 0, '') + packArt(no) + '</div>' + GUIDE;
@@ -1988,12 +2020,31 @@ dialog.inside{padding:0;overflow-y:auto}
 
   async function afterTear(ctx) {
     if (ctx.dead) return;
-    // the pack is committed the moment the seal comes off: draw and record the prize now
-    const prize = ctx.prize = drawPrize(state.force);
-    state.packs -= 1; state.opened += 1;
-    state.pulls[prize.id] = (state.pulls[prize.id] || 0) + 1;
-    state.force = 'random'; $('forceSel').value = 'random';
-    ctx.no = state.opened; ctx.rank = TIERS[prize.tier].rank;
+    // the pack is committed the moment the seal comes off: the prize is decided and recorded now
+    let prize;
+    if (LIVE.on) {
+      /* live: the server takes the pack, gives it its number in the site-wide count, and decides the card */
+      const r = await api('open', {});
+      prize = r.ok ? CONFIG.prizes.find((p) => p.id === r.prize_id) : null;
+      if (!prize) {
+        const w = await api('wallet');
+        if (w.ok) applyWallet(w);
+        if (R === ctx) closeRip();
+        renderCounts(); renderPulls();
+        toast(r.error === 'no_packs' ? 'That pack was already opened.' : 'That pack could not be opened. Check your connection and try again.');
+        return;
+      }
+      applyWallet(r); ctx.no = r.pack_no;
+      if (ctx.dead) { renderCounts(); renderPulls(); return; }   /* closed mid-tear: the pull is saved in My pulls */
+      $('ripChip').textContent = 'Pack No. ' + pad4(ctx.no) + (state.packs > 0 ? ' \u00b7 ' + plural(state.packs, 'more pack', 'more packs') + ' after this' : '');
+    } else {
+      prize = drawPrize(state.force);
+      state.packs -= 1; state.opened += 1;
+      state.pulls[prize.id] = (state.pulls[prize.id] || 0) + 1;
+      state.force = 'random'; $('forceSel').value = 'random';
+      ctx.no = state.opened;
+    }
+    ctx.prize = prize; ctx.rank = TIERS[prize.tier].rank;
     save(); renderCounts();
     ctx.pc.dataset.tier = prize.tier;
     ctx.pc.querySelector('.pc__front').innerHTML = cardInner(prize, ctx.no);
@@ -2104,7 +2155,7 @@ dialog.inside{padding:0;overflow-y:auto}
     $('ripTier').textContent = TIERS[prize.tier].label; $('ripTier').dataset.tier = prize.tier;
     $('ripName').textContent = prize.name;
     const note = $('ripNote');
-    note.textContent = grand ? 'Preview pull. No real prize is awarded.' : 'Pack No. ' + pad4(ctx.no) + ' is saved in My pulls and adds ' + num(ctx.prize.entries || 0) + ' entries to the final draw for the M3.';
+    note.textContent = grand ? (LIVE.on ? 'Pack No. ' + num(ctx.no) + '. We will contact you by email to verify and arrange the prize.' : 'Preview pull. No real prize is awarded.') : 'Pack No. ' + pad4(ctx.no) + ' is saved in My pulls and adds ' + num(ctx.prize.entries || 0) + ' entries to the final draw for the M3.';
     note.classList.toggle('is-gold', grand);
     $('ripMeter').hidden = true;
     $('ripTitle').hidden = false;
@@ -2184,7 +2235,7 @@ dialog.inside{padding:0;overflow-y:auto}
     $('firstLabel').textContent = state.claimed ? 'Claimed' : 'Free';
     $('firstBtn').setAttribute('aria-label', state.claimed ? 'Free pack claimed' : 'Claim your free pack');
     $('firstBtn').disabled = state.claimed;
-    const no = 'No. ' + pad4(state.opened + 1);
+    const no = 'No. ' + pad4(LIVE.on ? LIVE.next : state.opened + 1);
     document.querySelectorAll('[data-pack3d] .pk__num').forEach((el) => { el.textContent = no; });
   }
 
@@ -2492,35 +2543,82 @@ dialog.inside{padding:0;overflow-y:auto}
       msg.textContent = 'Enter a valid email address, like name@example.com.'; msg.className = 'formmsg is-err';
       input.focus(); return;
     }
+    if (LIVE.on) { claimLive(input, msg); return; }
     input.value = '';
     if (!state.claimed) { state.claimed = true; state.packs += 1; save(); freeNext = true; }
     renderCounts(); renderPulls();
     closeDialogs();
     enterRip(null);
   });
+  /* live: the server gives one free pack per email address */
+  let busy = false;
+  async function claimLive(input, msg) {
+    if (busy) return; busy = true;
+    msg.textContent = 'One moment.'; msg.className = 'formmsg';
+    const r = await api('claim', { email: input.value.trim() });
+    busy = false;
+    if (!r.ok) {
+      msg.textContent = r.error === 'email_used' ? 'That email address has already claimed its free pack.'
+        : r.error === 'bad_email' ? 'Enter a valid email address, like name@example.com.'
+        : 'That did not go through. Check your connection and try again.';
+      msg.className = 'formmsg is-err'; input.focus(); return;
+    }
+    const fresh = !r.already;
+    applyWallet(r); input.value = ''; msg.textContent = '';
+    if (fresh) freeNext = true;
+    renderCounts(); renderPulls(); closeDialogs();
+    if (state.packs > 0) enterRip(null);
+  }
 
   function qty() { const r = document.querySelector('#qty input:checked'); return r ? Number(r.value) : 1; }
   function renderBuy() { const q = qty(); $('buyLabel').textContent = 'Purchase ' + plural(q, 'pack', 'packs') + ' · ' + money(q * CONFIG.packPrice); }
   $('qty').addEventListener('change', renderBuy);
   $('buyBtn').addEventListener('click', () => {
     const q = qty();
+    if (LIVE.on) { buyLive(q); return; }
     state.packs += q; save(); renderCounts(); renderPulls();
     const msg = $('buyMsg');
     msg.textContent = 'Preview only. Checkout is not connected, so ' + plural(q, 'pack was', 'packs were') + ' added for testing.'; msg.className = 'formmsg is-ok';
     $('buyRip').hidden = false;
   });
   $('buyRip').addEventListener('click', () => { closeDialogs(); enterRip(null); });
+  $('buyOk').addEventListener('change', () => { $('buyMsg').textContent = ''; });
+  /* live: hand the buyer to Stripe Checkout. Packs are added only after Stripe confirms the order. */
+  async function buyLive(q) {
+    const msg = $('buyMsg');
+    if (!$('buyOk').checked) { msg.textContent = 'Tick the box above to confirm you are eligible.'; msg.className = 'formmsg is-err'; $('buyOk').focus(); return; }
+    if (!LIVE.checkout) { msg.textContent = 'Checkout is not connected yet.'; msg.className = 'formmsg is-err'; return; }
+    if (busy) return; busy = true;
+    $('buyBtn').disabled = true; msg.textContent = 'Taking you to checkout.'; msg.className = 'formmsg';
+    const r = await api('checkout', { qty: q, eligible: true });
+    if (r.ok && typeof r.url === 'string' && /^https:\/\/[a-z0-9.-]*stripe\.com\//.test(r.url)) { location.href = r.url; return; }
+    busy = false; $('buyBtn').disabled = false;
+    msg.textContent = 'Checkout could not be started. Check your connection and try again.'; msg.className = 'formmsg is-err';
+  }
 
   /* a code is checked the same way wherever it is typed: only a genuine code adds a pack */
   function redeem(input, msg) {
     const v = input.value.trim().toUpperCase();
     if (!v) { msg.textContent = 'Enter the code from our email.'; msg.className = 'formmsg is-err'; return; }
+    if (LIVE.on) { redeemLive(v, input, msg); return; }
     if (v === CONFIG.freeCode) {
       state.packs += 1; save(); renderCounts(); renderPulls(); input.value = '';
       msg.textContent = 'Code accepted. 1 pack added.'; msg.className = 'formmsg is-ok';
     } else {
       msg.textContent = 'That code did not work. Check it against our email and try again.'; msg.className = 'formmsg is-err';
     }
+  }
+  async function redeemLive(code, input, msg) {
+    if (busy) return; busy = true;
+    msg.textContent = 'Checking.'; msg.className = 'formmsg';
+    const r = await api('redeem', { code });
+    busy = false;
+    if (!r.ok) {
+      msg.textContent = r.error === 'bad_code' ? 'That code did not work. It may be mistyped or already used.' : 'That did not go through. Check your connection and try again.';
+      msg.className = 'formmsg is-err'; return;
+    }
+    applyWallet(r); input.value = ''; renderCounts(); renderPulls();
+    msg.textContent = 'Code accepted. ' + plural(r.added, 'pack', 'packs') + ' added.'; msg.className = 'formmsg is-ok';
   }
   $('codeForm').addEventListener('submit', (e) => { e.preventDefault(); redeem($('codeInput'), $('codeMsg')); });
   $('pvCodeForm').addEventListener('submit', (e) => { e.preventDefault(); redeem($('pvCodeInput'), $('pvCodeMsg')); });
@@ -2539,9 +2637,10 @@ dialog.inside{padding:0;overflow-y:auto}
     msg.textContent = 'Preview only. Nothing was sent or saved.'; msg.className = 'formmsg is-ok';
   });
 
-  $('addPacksBtn').addEventListener('click', () => { state.packs += 5; save(); renderCounts(); renderPulls(); toast('5 packs added'); });
-  $('forceSel').addEventListener('change', (e) => { state.force = e.target.value; save(); });
+  $('addPacksBtn').addEventListener('click', () => { if (LIVE.on) return; state.packs += 5; save(); renderCounts(); renderPulls(); toast('5 packs added'); });
+  $('forceSel').addEventListener('change', (e) => { if (LIVE.on) return; state.force = e.target.value; save(); });
   $('resetBtn').addEventListener('click', () => {
+    if (LIVE.on) return;
     try { localStorage.removeItem(KEY); sessionStorage.removeItem('rl-gate'); } catch (e) { /* ignore */ }
     state = clean(null);
     $('forceSel').value = 'random'; renderCounts(); renderPulls(); toast('Preview reset');
@@ -2558,7 +2657,49 @@ dialog.inside{padding:0;overflow-y:auto}
     renderCounts(); renderPulls();
     requestAnimationFrame(ambient);
     if (location.hash === '#free-packs') $('free-packs').open = true;
-    autoGate();
+    const back = /[?&](paid|canceled)=/.test(location.search);
+    if (!back) autoGate();
+    goLive();
+  }
+
+  /* ---------- live mode: switch to the server if this copy of the site has one ---------- */
+  function renderAll() {
+    document.querySelectorAll('[data-price]').forEach((el) => { el.textContent = money(CONFIG.packPrice); });
+    renderBuy(); renderCounts(); renderPulls();
+  }
+  async function goLive() {
+    if (!/^https?:$/.test(location.protocol)) return;
+    const cfg = await api('config');
+    if (!cfg.ok || cfg.live !== true) return;
+    let w = walletToken ? await api('wallet') : { ok: false, error: 'no_wallet' };
+    if (!w.ok && w.error === 'network') return;
+    if (!w.ok) {
+      w = await api('wallet', {}, 'POST');
+      if (!w.ok || typeof w.token !== 'string') return;
+      walletToken = w.token;
+      try { localStorage.setItem(WKEY, walletToken); } catch (e) { /* this visit only */ }
+    }
+    LIVE.on = true; LIVE.checkout = cfg.checkout === true;
+    if (Number.isFinite(cfg.price_cents)) CONFIG.packPrice = cfg.price_cents / 100;
+    document.documentElement.classList.add('is-live');
+    $('buyOkRow').hidden = false;
+    applyWallet(w); renderAll();
+
+    /* back from Stripe: ask the server to confirm the order, then show the packs */
+    const q = new URLSearchParams(location.search), paid = q.get('paid');
+    if (paid || q.get('canceled')) { try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) { /* ignore */ } }
+    if (paid) {
+      const r = await api('confirm', { session_id: paid });
+      if (r.ok) {
+        applyWallet(r); renderAll();
+        toast(r.credited ? 'Order confirmed. ' + plural(r.qty, 'pack', 'packs') + ' added.' : 'Your packs are ready.');
+        if (state.packs > 0 && !R) openDlg('pullsDlg');
+      } else {
+        toast('We could not confirm that order yet. If you paid, your packs will appear shortly.');
+      }
+    } else if (q.get('canceled')) {
+      toast('Checkout canceled. No packs were added.');
+    }
   }
   const hot = window.claude && window.claude.hot;
   if (hot && hot.snapshot) hot.snapshot(() => state);

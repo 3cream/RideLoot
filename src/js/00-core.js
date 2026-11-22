@@ -69,7 +69,33 @@
     return o;
   }
   function load() { try { const raw = localStorage.getItem(KEY); if (raw) state = clean(JSON.parse(raw)); } catch (e) { /* storage unavailable: run from memory */ } }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ } }
+  function save() { if (LIVE.on) return; try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignore */ } }
+
+  /* ---------- live mode: served with its back end, packs, pulls and the pack count live on the server.
+     Without a back end (the preview) everything above keeps working from this browser alone. ---------- */
+  const LIVE = { on: false, checkout: false, next: 1 };
+  const WKEY = 'rideloot-wallet';
+  let walletToken = '';
+  try { walletToken = localStorage.getItem(WKEY) || ''; } catch (e) { /* storage unavailable */ }
+  async function api(path, data, method) {
+    const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 12000);
+    try {
+      const res = await fetch('/api/' + path, {
+        method: method || (data ? 'POST' : 'GET'), cache: 'no-store', signal: ctl.signal,
+        headers: Object.assign({ 'x-wallet': walletToken }, data ? { 'content-type': 'application/json' } : {}),
+        body: data ? JSON.stringify(data) : undefined
+      });
+      let out = null;
+      try { out = await res.json(); } catch (e) { /* not JSON: no back end here */ }
+      return out && typeof out === 'object' ? out : { ok: false, error: 'server' };
+    } catch (e) { return { ok: false, error: 'network' }; } finally { clearTimeout(timer); }
+  }
+  /* the server's word on this visitor replaces whatever the page was holding */
+  function applyWallet(w) {
+    const c = clean({ claimed: w.claimed === true, packs: w.packs, opened: w.opened, pulls: w.pulls, force: 'random' });
+    state.claimed = c.claimed; state.packs = c.packs; state.opened = c.opened; state.pulls = c.pulls; state.force = 'random';
+    if (Number.isFinite(w.next_no)) LIVE.next = w.next_no;
+  }
 
   /* ---------- the draw: one prize per pack ---------- */
   function rand() {

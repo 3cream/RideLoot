@@ -41,7 +41,7 @@
     $('firstLabel').textContent = state.claimed ? 'Claimed' : 'Free';
     $('firstBtn').setAttribute('aria-label', state.claimed ? 'Free pack claimed' : 'Claim your free pack');
     $('firstBtn').disabled = state.claimed;
-    const no = 'No. ' + pad4(state.opened + 1);
+    const no = 'No. ' + pad4(LIVE.on ? LIVE.next : state.opened + 1);
     document.querySelectorAll('[data-pack3d] .pk__num').forEach((el) => { el.textContent = no; });
   }
 
@@ -349,35 +349,82 @@
       msg.textContent = 'Enter a valid email address, like name@example.com.'; msg.className = 'formmsg is-err';
       input.focus(); return;
     }
+    if (LIVE.on) { claimLive(input, msg); return; }
     input.value = '';
     if (!state.claimed) { state.claimed = true; state.packs += 1; save(); freeNext = true; }
     renderCounts(); renderPulls();
     closeDialogs();
     enterRip(null);
   });
+  /* live: the server gives one free pack per email address */
+  let busy = false;
+  async function claimLive(input, msg) {
+    if (busy) return; busy = true;
+    msg.textContent = 'One moment.'; msg.className = 'formmsg';
+    const r = await api('claim', { email: input.value.trim() });
+    busy = false;
+    if (!r.ok) {
+      msg.textContent = r.error === 'email_used' ? 'That email address has already claimed its free pack.'
+        : r.error === 'bad_email' ? 'Enter a valid email address, like name@example.com.'
+        : 'That did not go through. Check your connection and try again.';
+      msg.className = 'formmsg is-err'; input.focus(); return;
+    }
+    const fresh = !r.already;
+    applyWallet(r); input.value = ''; msg.textContent = '';
+    if (fresh) freeNext = true;
+    renderCounts(); renderPulls(); closeDialogs();
+    if (state.packs > 0) enterRip(null);
+  }
 
   function qty() { const r = document.querySelector('#qty input:checked'); return r ? Number(r.value) : 1; }
   function renderBuy() { const q = qty(); $('buyLabel').textContent = 'Purchase ' + plural(q, 'pack', 'packs') + ' · ' + money(q * CONFIG.packPrice); }
   $('qty').addEventListener('change', renderBuy);
   $('buyBtn').addEventListener('click', () => {
     const q = qty();
+    if (LIVE.on) { buyLive(q); return; }
     state.packs += q; save(); renderCounts(); renderPulls();
     const msg = $('buyMsg');
     msg.textContent = 'Preview only. Checkout is not connected, so ' + plural(q, 'pack was', 'packs were') + ' added for testing.'; msg.className = 'formmsg is-ok';
     $('buyRip').hidden = false;
   });
   $('buyRip').addEventListener('click', () => { closeDialogs(); enterRip(null); });
+  $('buyOk').addEventListener('change', () => { $('buyMsg').textContent = ''; });
+  /* live: hand the buyer to Stripe Checkout. Packs are added only after Stripe confirms the order. */
+  async function buyLive(q) {
+    const msg = $('buyMsg');
+    if (!$('buyOk').checked) { msg.textContent = 'Tick the box above to confirm you are eligible.'; msg.className = 'formmsg is-err'; $('buyOk').focus(); return; }
+    if (!LIVE.checkout) { msg.textContent = 'Checkout is not connected yet.'; msg.className = 'formmsg is-err'; return; }
+    if (busy) return; busy = true;
+    $('buyBtn').disabled = true; msg.textContent = 'Taking you to checkout.'; msg.className = 'formmsg';
+    const r = await api('checkout', { qty: q, eligible: true });
+    if (r.ok && typeof r.url === 'string' && /^https:\/\/[a-z0-9.-]*stripe\.com\//.test(r.url)) { location.href = r.url; return; }
+    busy = false; $('buyBtn').disabled = false;
+    msg.textContent = 'Checkout could not be started. Check your connection and try again.'; msg.className = 'formmsg is-err';
+  }
 
   /* a code is checked the same way wherever it is typed: only a genuine code adds a pack */
   function redeem(input, msg) {
     const v = input.value.trim().toUpperCase();
     if (!v) { msg.textContent = 'Enter the code from our email.'; msg.className = 'formmsg is-err'; return; }
+    if (LIVE.on) { redeemLive(v, input, msg); return; }
     if (v === CONFIG.freeCode) {
       state.packs += 1; save(); renderCounts(); renderPulls(); input.value = '';
       msg.textContent = 'Code accepted. 1 pack added.'; msg.className = 'formmsg is-ok';
     } else {
       msg.textContent = 'That code did not work. Check it against our email and try again.'; msg.className = 'formmsg is-err';
     }
+  }
+  async function redeemLive(code, input, msg) {
+    if (busy) return; busy = true;
+    msg.textContent = 'Checking.'; msg.className = 'formmsg';
+    const r = await api('redeem', { code });
+    busy = false;
+    if (!r.ok) {
+      msg.textContent = r.error === 'bad_code' ? 'That code did not work. It may be mistyped or already used.' : 'That did not go through. Check your connection and try again.';
+      msg.className = 'formmsg is-err'; return;
+    }
+    applyWallet(r); input.value = ''; renderCounts(); renderPulls();
+    msg.textContent = 'Code accepted. ' + plural(r.added, 'pack', 'packs') + ' added.'; msg.className = 'formmsg is-ok';
   }
   $('codeForm').addEventListener('submit', (e) => { e.preventDefault(); redeem($('codeInput'), $('codeMsg')); });
   $('pvCodeForm').addEventListener('submit', (e) => { e.preventDefault(); redeem($('pvCodeInput'), $('pvCodeMsg')); });
@@ -396,9 +443,10 @@
     msg.textContent = 'Preview only. Nothing was sent or saved.'; msg.className = 'formmsg is-ok';
   });
 
-  $('addPacksBtn').addEventListener('click', () => { state.packs += 5; save(); renderCounts(); renderPulls(); toast('5 packs added'); });
-  $('forceSel').addEventListener('change', (e) => { state.force = e.target.value; save(); });
+  $('addPacksBtn').addEventListener('click', () => { if (LIVE.on) return; state.packs += 5; save(); renderCounts(); renderPulls(); toast('5 packs added'); });
+  $('forceSel').addEventListener('change', (e) => { if (LIVE.on) return; state.force = e.target.value; save(); });
   $('resetBtn').addEventListener('click', () => {
+    if (LIVE.on) return;
     try { localStorage.removeItem(KEY); sessionStorage.removeItem('rl-gate'); } catch (e) { /* ignore */ }
     state = clean(null);
     $('forceSel').value = 'random'; renderCounts(); renderPulls(); toast('Preview reset');
@@ -415,7 +463,49 @@
     renderCounts(); renderPulls();
     requestAnimationFrame(ambient);
     if (location.hash === '#free-packs') $('free-packs').open = true;
-    autoGate();
+    const back = /[?&](paid|canceled)=/.test(location.search);
+    if (!back) autoGate();
+    goLive();
+  }
+
+  /* ---------- live mode: switch to the server if this copy of the site has one ---------- */
+  function renderAll() {
+    document.querySelectorAll('[data-price]').forEach((el) => { el.textContent = money(CONFIG.packPrice); });
+    renderBuy(); renderCounts(); renderPulls();
+  }
+  async function goLive() {
+    if (!/^https?:$/.test(location.protocol)) return;
+    const cfg = await api('config');
+    if (!cfg.ok || cfg.live !== true) return;
+    let w = walletToken ? await api('wallet') : { ok: false, error: 'no_wallet' };
+    if (!w.ok && w.error === 'network') return;
+    if (!w.ok) {
+      w = await api('wallet', {}, 'POST');
+      if (!w.ok || typeof w.token !== 'string') return;
+      walletToken = w.token;
+      try { localStorage.setItem(WKEY, walletToken); } catch (e) { /* this visit only */ }
+    }
+    LIVE.on = true; LIVE.checkout = cfg.checkout === true;
+    if (Number.isFinite(cfg.price_cents)) CONFIG.packPrice = cfg.price_cents / 100;
+    document.documentElement.classList.add('is-live');
+    $('buyOkRow').hidden = false;
+    applyWallet(w); renderAll();
+
+    /* back from Stripe: ask the server to confirm the order, then show the packs */
+    const q = new URLSearchParams(location.search), paid = q.get('paid');
+    if (paid || q.get('canceled')) { try { history.replaceState(null, '', location.pathname + location.hash); } catch (e) { /* ignore */ } }
+    if (paid) {
+      const r = await api('confirm', { session_id: paid });
+      if (r.ok) {
+        applyWallet(r); renderAll();
+        toast(r.credited ? 'Order confirmed. ' + plural(r.qty, 'pack', 'packs') + ' added.' : 'Your packs are ready.');
+        if (state.packs > 0 && !R) openDlg('pullsDlg');
+      } else {
+        toast('We could not confirm that order yet. If you paid, your packs will appear shortly.');
+      }
+    } else if (q.get('canceled')) {
+      toast('Checkout canceled. No packs were added.');
+    }
   }
   const hot = window.claude && window.claude.hot;
   if (hot && hot.snapshot) hot.snapshot(() => state);

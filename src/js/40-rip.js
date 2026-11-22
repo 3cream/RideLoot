@@ -52,7 +52,7 @@
     if (R) endRun(R); else ripReturn = document.activeElement;
     const ctx = R = { phase: 'enter', prize: null, no: 0, rank: 0, p: 0, dir: 1, drag: null, fast: false, dead: false, done: false, anims: [], timers: [], waiters: [] };
     const from = src ? src.getBoundingClientRect() : null;
-    const no = state.opened + 1;
+    const no = LIVE.on ? LIVE.next : state.opened + 1;   /* live: the next pack in the site-wide count */
     rig.style.setProperty('--p', '0'); rig.style.setProperty('--sx', '0');
     rig.innerHTML = '<div class="rig__glow"></div><div class="rig__ring"></div><div class="rig__shadow"></div><div class="pkrays"></div>' +
       '<div class="rig__body"><div class="pkback"><span class="pkback__crimp"></span><span class="pkback__shade"></span></div>' + cardHTML(null, 0, '') + packArt(no) + '</div>' + GUIDE;
@@ -174,12 +174,31 @@
 
   async function afterTear(ctx) {
     if (ctx.dead) return;
-    // the pack is committed the moment the seal comes off: draw and record the prize now
-    const prize = ctx.prize = drawPrize(state.force);
-    state.packs -= 1; state.opened += 1;
-    state.pulls[prize.id] = (state.pulls[prize.id] || 0) + 1;
-    state.force = 'random'; $('forceSel').value = 'random';
-    ctx.no = state.opened; ctx.rank = TIERS[prize.tier].rank;
+    // the pack is committed the moment the seal comes off: the prize is decided and recorded now
+    let prize;
+    if (LIVE.on) {
+      /* live: the server takes the pack, gives it its number in the site-wide count, and decides the card */
+      const r = await api('open', {});
+      prize = r.ok ? CONFIG.prizes.find((p) => p.id === r.prize_id) : null;
+      if (!prize) {
+        const w = await api('wallet');
+        if (w.ok) applyWallet(w);
+        if (R === ctx) closeRip();
+        renderCounts(); renderPulls();
+        toast(r.error === 'no_packs' ? 'That pack was already opened.' : 'That pack could not be opened. Check your connection and try again.');
+        return;
+      }
+      applyWallet(r); ctx.no = r.pack_no;
+      if (ctx.dead) { renderCounts(); renderPulls(); return; }   /* closed mid-tear: the pull is saved in My pulls */
+      $('ripChip').textContent = 'Pack No. ' + pad4(ctx.no) + (state.packs > 0 ? ' \u00b7 ' + plural(state.packs, 'more pack', 'more packs') + ' after this' : '');
+    } else {
+      prize = drawPrize(state.force);
+      state.packs -= 1; state.opened += 1;
+      state.pulls[prize.id] = (state.pulls[prize.id] || 0) + 1;
+      state.force = 'random'; $('forceSel').value = 'random';
+      ctx.no = state.opened;
+    }
+    ctx.prize = prize; ctx.rank = TIERS[prize.tier].rank;
     save(); renderCounts();
     ctx.pc.dataset.tier = prize.tier;
     ctx.pc.querySelector('.pc__front').innerHTML = cardInner(prize, ctx.no);
@@ -290,7 +309,7 @@
     $('ripTier').textContent = TIERS[prize.tier].label; $('ripTier').dataset.tier = prize.tier;
     $('ripName').textContent = prize.name;
     const note = $('ripNote');
-    note.textContent = grand ? 'Preview pull. No real prize is awarded.' : 'Pack No. ' + pad4(ctx.no) + ' is saved in My pulls and adds ' + num(ctx.prize.entries || 0) + ' entries to the final draw for the M3.';
+    note.textContent = grand ? (LIVE.on ? 'Pack No. ' + num(ctx.no) + '. We will contact you by email to verify and arrange the prize.' : 'Preview pull. No real prize is awarded.') : 'Pack No. ' + pad4(ctx.no) + ' is saved in My pulls and adds ' + num(ctx.prize.entries || 0) + ' entries to the final draw for the M3.';
     note.classList.toggle('is-gold', grand);
     $('ripMeter').hidden = true;
     $('ripTitle').hidden = false;

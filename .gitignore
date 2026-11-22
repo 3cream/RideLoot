@@ -5,3 +5,4 @@ out/
 tmp/
 .vercel
 .env*
+node_modules/

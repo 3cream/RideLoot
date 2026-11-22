@@ -142,3 +142,8 @@ dialog.inside{padding:0;overflow-y:auto}
 @media (max-width:400px){.pv__code .field{gap:8px}.pv__code .input{padding-left:12px;padding-right:8px}}
 .sheetdlg .eyebrow{padding-right:56px}
 .rules .mail{color:var(--brand-hi);text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
+
+/* live site only */
+.pv__elig{margin:2px 0 0;font-size:.8rem;line-height:1.45;color:var(--muted);max-width:52ch}
+.pv__elig[hidden]{display:none}
+.is-live .tools{display:none}
