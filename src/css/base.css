@@ -23,7 +23,7 @@
   --pad:clamp(16px,4vw,56px);
   --r-lg:28px;
   --r-md:18px;
-  --ribbon:30px;
+  --ribbon:0px;
 }
 *{box-sizing:border-box}
 [hidden]{display:none !important}
