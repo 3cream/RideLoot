@@ -2151,7 +2151,8 @@ dialog.inside{padding:0;overflow-y:auto}
     $('ripTier').textContent = TIERS[prize.tier].label; $('ripTier').dataset.tier = prize.tier;
     $('ripName').textContent = prize.name;
     const note = $('ripNote');
-    note.textContent = grand ? (LIVE.on ? 'Pack No. ' + num(ctx.no) + '. We will contact you by email to verify and arrange the prize.' : 'Preview pull. No real prize is awarded.') : 'Pack No. ' + pad4(ctx.no) + ' is saved in My pulls and adds ' + num(ctx.prize.entries || 0) + ' entries to the final draw for the M3.';
+    note.textContent = grand ? (LIVE.on ? 'Pack No. ' + num(ctx.no) + '. We will contact you by email to verify and arrange the prize.' : 'Preview pull. No real prize is awarded.') : '';
+    note.hidden = !grand;
     note.classList.toggle('is-gold', grand);
     $('ripMeter').hidden = true;
     $('ripTitle').hidden = false;
