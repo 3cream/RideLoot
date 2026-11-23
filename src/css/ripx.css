@@ -109,3 +109,4 @@
 .rip__skip{display:none;text-align:center}
 .rip[data-phase="torn"] .rip__skip,.rip[data-phase="charge"] .rip__skip,.rip[data-phase="peek"] .rip__skip{display:block}
 @media (max-width:420px){#buyBtn{font-size:clamp(.92rem,4.9vw,1.2rem);padding-left:10px;padding-right:10px}}
+.rip__chip[hidden]{display:none}

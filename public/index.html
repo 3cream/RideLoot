@@ -961,6 +961,7 @@ dialog.inside{padding:0;overflow-y:auto}
 .rip__skip{display:none;text-align:center}
 .rip[data-phase="torn"] .rip__skip,.rip[data-phase="charge"] .rip__skip,.rip[data-phase="peek"] .rip__skip{display:block}
 @media (max-width:420px){#buyBtn{font-size:clamp(.92rem,4.9vw,1.2rem);padding-left:10px;padding-right:10px}}
+.rip__chip[hidden]{display:none}
 
 /* ---------- prize cards, second pass: a foil rim, a header strip, rarity gems, and a finish that gets richer with every tier ---------- */
 [data-tier="common"]{--t2:#6f7c86;--foil:linear-gradient(135deg,#59646c,#dfe6ea 30%,#7b8790 55%,#eef2f4 78%,#59646c)}
@@ -1907,7 +1908,9 @@ dialog.inside{padding:0;overflow-y:auto}
     $('ripTitle').hidden = true; $('ripActions').hidden = true; $('againNote').hidden = true;
     $('tapRipBtn').hidden = false; $('ripPrompt').hidden = false;
     $('ripLive').textContent = ''; $('toast').classList.remove('is-on');
-    $('ripChip').textContent = 'Pack No. ' + pad4(no) + (state.packs > 1 ? ' \u00b7 ' + plural(state.packs - 1, 'more pack', 'more packs') + ' after this' : '');
+    /* top left: only how many packs are still waiting, and nothing at all on the last one */
+    $('ripChip').textContent = state.packs > 1 ? plural(state.packs - 1, 'more pack', 'more packs') + ' after this' : '';
+    $('ripChip').hidden = state.packs <= 1;
     ripEl.hidden = false; ripEl.setAttribute('aria-hidden', 'false');
     syncLock();
     if (ripSrc) ripSrc.classList.remove('is-away');
@@ -2029,7 +2032,8 @@ dialog.inside{padding:0;overflow-y:auto}
       }
       applyWallet(r); ctx.no = r.pack_no;
       if (ctx.dead) { renderCounts(); renderPulls(); return; }   /* closed mid-tear: the pull is saved in My pulls */
-      $('ripChip').textContent = 'Pack No. ' + pad4(ctx.no) + (state.packs > 0 ? ' \u00b7 ' + plural(state.packs, 'more pack', 'more packs') + ' after this' : '');
+      $('ripChip').textContent = state.packs > 0 ? plural(state.packs, 'more pack', 'more packs') + ' after this' : '';
+      $('ripChip').hidden = state.packs <= 0;
     } else {
       prize = drawPrize(state.force);
       state.packs -= 1; state.opened += 1;

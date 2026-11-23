@@ -68,7 +68,9 @@
     $('ripTitle').hidden = true; $('ripActions').hidden = true; $('againNote').hidden = true;
     $('tapRipBtn').hidden = false; $('ripPrompt').hidden = false;
     $('ripLive').textContent = ''; $('toast').classList.remove('is-on');
-    $('ripChip').textContent = 'Pack No. ' + pad4(no) + (state.packs > 1 ? ' \u00b7 ' + plural(state.packs - 1, 'more pack', 'more packs') + ' after this' : '');
+    /* top left: only how many packs are still waiting, and nothing at all on the last one */
+    $('ripChip').textContent = state.packs > 1 ? plural(state.packs - 1, 'more pack', 'more packs') + ' after this' : '';
+    $('ripChip').hidden = state.packs <= 1;
     ripEl.hidden = false; ripEl.setAttribute('aria-hidden', 'false');
     syncLock();
     if (ripSrc) ripSrc.classList.remove('is-away');
@@ -190,7 +192,8 @@
       }
       applyWallet(r); ctx.no = r.pack_no;
       if (ctx.dead) { renderCounts(); renderPulls(); return; }   /* closed mid-tear: the pull is saved in My pulls */
-      $('ripChip').textContent = 'Pack No. ' + pad4(ctx.no) + (state.packs > 0 ? ' \u00b7 ' + plural(state.packs, 'more pack', 'more packs') + ' after this' : '');
+      $('ripChip').textContent = state.packs > 0 ? plural(state.packs, 'more pack', 'more packs') + ' after this' : '';
+      $('ripChip').hidden = state.packs <= 0;
     } else {
       prize = drawPrize(state.force);
       state.packs -= 1; state.opened += 1;
