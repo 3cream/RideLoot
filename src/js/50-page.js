@@ -388,15 +388,13 @@
     $('buyRip').hidden = false;
   });
   $('buyRip').addEventListener('click', () => { closeDialogs(); enterRip(null); });
-  $('buyOk').addEventListener('change', () => { $('buyMsg').textContent = ''; });
   /* live: hand the buyer to Stripe Checkout. Packs are added only after Stripe confirms the order. */
   async function buyLive(q) {
     const msg = $('buyMsg');
-    if (!$('buyOk').checked) { msg.textContent = 'Tick the box above to confirm you are eligible.'; msg.className = 'formmsg is-err'; $('buyOk').focus(); return; }
     if (!LIVE.checkout) { msg.textContent = 'Checkout is not connected yet.'; msg.className = 'formmsg is-err'; return; }
     if (busy) return; busy = true;
     $('buyBtn').disabled = true; msg.textContent = 'Taking you to checkout.'; msg.className = 'formmsg';
-    const r = await api('checkout', { qty: q, eligible: true });
+    const r = await api('checkout', { qty: q });
     if (r.ok && typeof r.url === 'string' && /^https:\/\/[a-z0-9.-]*stripe\.com\//.test(r.url)) { location.href = r.url; return; }
     busy = false; $('buyBtn').disabled = false;
     msg.textContent = 'Checkout could not be started. Check your connection and try again.'; msg.className = 'formmsg is-err';
@@ -488,7 +486,6 @@
     LIVE.on = true; LIVE.checkout = cfg.checkout === true;
     if (Number.isFinite(cfg.price_cents)) CONFIG.packPrice = cfg.price_cents / 100;
     document.documentElement.classList.add('is-live');
-    $('buyOkRow').hidden = false;
     applyWallet(w); renderAll();
 
     /* back from Stripe: ask the server to confirm the order, then show the packs */

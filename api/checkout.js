@@ -10,7 +10,6 @@ export default route('POST', async (request) => {
   if (!w) return fail(401, 'no_wallet');
   const b = await body(request), qty = Number(b.qty);
   if (!PACK_SIZES.includes(qty)) return fail(400, 'bad_qty');
-  if (b.eligible !== true) return fail(400, 'not_eligible');
   const origin = siteOrigin(request);
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
