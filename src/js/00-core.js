@@ -73,7 +73,7 @@
 
   /* ---------- live mode: served with its back end, packs, pulls and the pack count live on the server.
      Without a back end (the preview) everything above keeps working from this browser alone. ---------- */
-  const LIVE = { on: false, checkout: false, next: 1 };
+  const LIVE = { on: false, checkout: false, next: 1, wallpaper: '' };
   const WKEY = 'rideloot-wallet';
   let walletToken = '';
   try { walletToken = localStorage.getItem(WKEY) || ''; } catch (e) { /* storage unavailable */ }
@@ -95,6 +95,7 @@
     const c = clean({ claimed: w.claimed === true, packs: w.packs, opened: w.opened, pulls: w.pulls, force: 'random' });
     state.claimed = c.claimed; state.packs = c.packs; state.opened = c.opened; state.pulls = c.pulls; state.force = 'random';
     if (Number.isFinite(w.next_no)) LIVE.next = w.next_no;
+    if ('wallpaper' in w) LIVE.wallpaper = typeof w.wallpaper === 'string' && w.wallpaper.indexOf('/api/wallpaper?o=') === 0 ? w.wallpaper : '';
   }
 
   /* ---------- the draw: one prize per pack ---------- */

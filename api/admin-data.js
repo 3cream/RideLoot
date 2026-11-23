@@ -18,7 +18,7 @@ export default route('GET', async (request) => {
                     (SELECT count(*) FROM pulls x WHERE x.wallet_id = w.id)::int AS opened,
                     (SELECT coalesce(sum(entries), 0) FROM pulls x WHERE x.wallet_id = w.id)::bigint AS entries
              FROM wallets w WHERE w.email IS NOT NULL ORDER BY at DESC LIMIT 5000`),
-    p.query(`SELECT o.created_at AS at, o.email, o.qty, o.amount_cents, o.session_id, w.email AS claim_email
+    p.query(`SELECT o.created_at AS at, o.email, o.qty, o.amount_cents, o.session_id, o.emailed_at, w.email AS claim_email
              FROM orders o JOIN wallets w ON w.id = o.wallet_id ORDER BY o.created_at DESC LIMIT 5000`),
     p.query(`SELECT c.code, c.packs, c.note, c.created_at AS at, c.redeemed_at, w.email AS used_by
              FROM codes c LEFT JOIN wallets w ON w.id = c.wallet_id ORDER BY c.created_at DESC LIMIT 5000`),

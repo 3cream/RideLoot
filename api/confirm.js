@@ -14,5 +14,5 @@ export default route('POST', async (request) => {
   try { session = await stripe.checkout.sessions.retrieve(id); } catch (e) { return fail(404, 'bad_session'); }
   const r = await fulfil(session);
   if (!r.ok) return fail(402, r.error);
-  return json({ ok: true, credited: r.credited, qty: r.qty, mine: r.wallet_id === Number(w.id), ...(await walletState(await db(), w.id)) });
+  return json({ ok: true, credited: r.credited, qty: r.qty, emailed: r.emailed === true, mine: r.wallet_id === Number(w.id), ...(await walletState(await db(), w.id)) });
 });

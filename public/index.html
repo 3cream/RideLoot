@@ -792,6 +792,9 @@ dialog.inside{padding:0;overflow-y:auto}
 
 /* live site only */
 .is-live .tools{display:none}
+.drawer__wall{margin:12px 0 0 6px}
+.drawer__wall[hidden]{display:none}
+.drawer__wall .btn{text-decoration:none}
 
 /* ---------- the rip room ---------- */
 .rip{position:fixed;inset:0;z-index:50;display:grid;grid-template-rows:minmax(0,1fr) auto;overflow:hidden;background:#020304;opacity:0;transition:opacity .28s,--tint .45s;--tint:#b8c4cb}
@@ -1488,6 +1491,7 @@ dialog.inside{padding:0;overflow-y:auto}
   </div>
   <div id="pulls"></div>
   <p class="drawer__cta"><button class="btn btn--sm" type="button" data-cta><span data-cta-label>Get my free pack</span></button></p>
+  <p class="drawer__wall" id="wallRow" hidden><a class="btn btn--sm btn--ghost" id="wallBtn" href="#" download="RideLoot-Series-1-Wallpaper.jpg"><span>Download my wallpaper</span></a></p>
   <p class="fine npn drawer__npn">No purchase necessary. All states excluding FL and NY.</p>
 </dialog>
 
@@ -1620,7 +1624,7 @@ dialog.inside{padding:0;overflow-y:auto}
 
   /* ---------- live mode: served with its back end, packs, pulls and the pack count live on the server.
      Without a back end (the preview) everything above keeps working from this browser alone. ---------- */
-  const LIVE = { on: false, checkout: false, next: 1 };
+  const LIVE = { on: false, checkout: false, next: 1, wallpaper: '' };
   const WKEY = 'rideloot-wallet';
   let walletToken = '';
   try { walletToken = localStorage.getItem(WKEY) || ''; } catch (e) { /* storage unavailable */ }
@@ -1642,6 +1646,7 @@ dialog.inside{padding:0;overflow-y:auto}
     const c = clean({ claimed: w.claimed === true, packs: w.packs, opened: w.opened, pulls: w.pulls, force: 'random' });
     state.claimed = c.claimed; state.packs = c.packs; state.opened = c.opened; state.pulls = c.pulls; state.force = 'random';
     if (Number.isFinite(w.next_no)) LIVE.next = w.next_no;
+    if ('wallpaper' in w) LIVE.wallpaper = typeof w.wallpaper === 'string' && w.wallpaper.indexOf('/api/wallpaper?o=') === 0 ? w.wallpaper : '';
   }
 
   /* ---------- the draw: one prize per pack ---------- */
@@ -2273,6 +2278,9 @@ dialog.inside{padding:0;overflow-y:auto}
     $('statOpened').textContent = state.opened;
     $('statEntries').textContent = num(entriesTotal());
     $('statPacks').textContent = state.packs;
+    /* a buyer can fetch their wallpaper again here at any time */
+    $('wallRow').hidden = !(LIVE.on && LIVE.wallpaper);
+    if (LIVE.on && LIVE.wallpaper) $('wallBtn').href = LIVE.wallpaper;
     const rows = CONFIG.prizes.filter((p) => state.pulls[p.id]).sort((a, b) => TIERS[b.tier].rank - TIERS[a.tier].rank || a.weight - b.weight);
     $('pulls').className = rows.length ? 'pulls' : '';
     $('pulls').innerHTML = rows.length
@@ -2690,7 +2698,7 @@ dialog.inside{padding:0;overflow-y:auto}
       const r = await api('confirm', { session_id: paid });
       if (r.ok) {
         applyWallet(r); renderAll();
-        toast(r.credited ? 'Order confirmed. ' + plural(r.qty, 'pack', 'packs') + ' added.' : 'Your packs are ready.');
+        toast(r.credited ? 'Order confirmed. ' + plural(r.qty, 'pack', 'packs') + ' added.' + (r.emailed ? ' Your wallpaper is on its way by email.' : ' Your wallpaper is ready to download.') : 'Your packs are ready.');
         if (state.packs > 0 && !R) openDlg('pullsDlg');
       } else {
         toast('We could not confirm that order yet. If you paid, your packs will appear shortly.');

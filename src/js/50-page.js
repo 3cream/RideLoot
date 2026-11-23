@@ -81,6 +81,9 @@
     $('statOpened').textContent = state.opened;
     $('statEntries').textContent = num(entriesTotal());
     $('statPacks').textContent = state.packs;
+    /* a buyer can fetch their wallpaper again here at any time */
+    $('wallRow').hidden = !(LIVE.on && LIVE.wallpaper);
+    if (LIVE.on && LIVE.wallpaper) $('wallBtn').href = LIVE.wallpaper;
     const rows = CONFIG.prizes.filter((p) => state.pulls[p.id]).sort((a, b) => TIERS[b.tier].rank - TIERS[a.tier].rank || a.weight - b.weight);
     $('pulls').className = rows.length ? 'pulls' : '';
     $('pulls').innerHTML = rows.length
@@ -498,7 +501,7 @@
       const r = await api('confirm', { session_id: paid });
       if (r.ok) {
         applyWallet(r); renderAll();
-        toast(r.credited ? 'Order confirmed. ' + plural(r.qty, 'pack', 'packs') + ' added.' : 'Your packs are ready.');
+        toast(r.credited ? 'Order confirmed. ' + plural(r.qty, 'pack', 'packs') + ' added.' + (r.emailed ? ' Your wallpaper is on its way by email.' : ' Your wallpaper is ready to download.') : 'Your packs are ready.');
         if (state.packs > 0 && !R) openDlg('pullsDlg');
       } else {
         toast('We could not confirm that order yet. If you paid, your packs will appear shortly.');

@@ -145,3 +145,6 @@ dialog.inside{padding:0;overflow-y:auto}
 
 /* live site only */
 .is-live .tools{display:none}
+.drawer__wall{margin:12px 0 0 6px}
+.drawer__wall[hidden]{display:none}
+.drawer__wall .btn{text-decoration:none}

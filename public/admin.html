@@ -177,6 +177,7 @@
     fill($('orders'), table(data.orders, [
       { h: 'When', v: (r) => when(r.at) }, { h: 'Email at checkout', v: (r) => r.email || '' }, { h: 'Free pack email', v: (r) => r.claim_email || '' },
       { h: 'Packs', num: true, v: (r) => num(r.qty) }, { h: 'Paid', num: true, v: (r) => money(r.amount_cents) },
+      { h: 'Wallpaper email', v: (r) => el('span', r.emailed_at ? 'Sent ' + when(r.emailed_at) : 'Not sent', 'pill' + (r.emailed_at ? ' ok' : '')) },
     ], 'No orders yet.'));
 
     $('codeCount').textContent = num(data.codes.length) + (data.codes.length === 1 ? ' code made' : ' codes made');
