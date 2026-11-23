@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>RideLoot Admin</title>
+<style>
+  :root{--night:#05090d;--panel:#0d141b;--line:rgba(255,255,255,.1);--text:#eef3f7;--muted:#93a4b3;--brand:#0a84ff;--hi:#5db8ff;--bad:#ff9483;--ok:#4be3a0}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--night);color:var(--text);font:15px/1.5 "Barlow","Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 80px}
+  h1{margin:0;font:italic 800 2.1rem/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.03em;text-transform:uppercase}
+  h1 span{color:var(--hi)}
+  h2{margin:0 0 12px;font:italic 700 1.3rem/1.1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.05em;text-transform:uppercase}
+  p{margin:0 0 12px}
+  .muted{color:var(--muted)}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .login{max-width:440px;margin:12vh auto 0}
+  label{display:block;font-weight:600;margin:0 0 6px}
+  input,select{width:100%;height:44px;padding:0 14px;border-radius:10px;border:1px solid var(--line);background:#000;color:var(--text);font:inherit}
+  input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--hi);outline-offset:2px}
+  button{height:44px;padding:0 18px;border-radius:10px;border:1px solid rgba(190,228,255,.6);background:linear-gradient(180deg,#58b4ff,#0a84ff 50%,#005fe0);color:#fff;font:italic 800 1rem/1 "Barlow Condensed","Arial Narrow",sans-serif;letter-spacing:.07em;text-transform:uppercase;cursor:pointer}
+  button.ghost{background:rgba(255,255,255,.06);border-color:var(--line);color:var(--text)}
+  button.small{height:32px;padding:0 12px;font-size:.85rem}
+  button:disabled{opacity:.5;cursor:default}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+  .row > div{flex:1 1 160px}
+  .row > .fit{flex:0 0 auto}
+  .msg{min-height:1.4em;margin:10px 0 0;color:var(--muted)}
+  .msg.bad{color:var(--bad)} .msg.ok{color:var(--ok)}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .stat b{display:block;font:italic 800 1.9rem/1.05 "Barlow Condensed","Arial Narrow",sans-serif;color:#fff;font-variant-numeric:tabular-nums}
+  .stat span{color:var(--muted);font-size:.85rem}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  .tabs button[aria-selected="false"]{background:rgba(255,255,255,.06);border-color:var(--line);color:var(--muted)}
+  .tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .tools input{max-width:280px;height:38px}
+  .scroll{overflow:auto;border:1px solid var(--line);border-radius:12px;max-height:62vh}
+  table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+  th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{position:sticky;top:0;background:#121b24;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  td.num,th.num{text-align:right}
+  tr:last-child td{border-bottom:0}
+  .empty{padding:22px;color:var(--muted)}
+  code{font:600 1rem/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:.06em;color:#fff}
+  .pill{display:inline-block;padding:2px 9px;border-radius:999px;font-size:.78rem;border:1px solid var(--line);color:var(--muted)}
+  .pill.ok{color:var(--ok);border-color:rgba(75,227,160,.5)}
+  .new{margin-top:14px;display:grid;gap:8px}
+  .new div{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 12px;border:1px solid rgba(93,184,255,.4);border-radius:10px;background:rgba(10,132,255,.08)}
+  [hidden]{display:none !important}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <section class="panel login" id="login">
+    <h1>Ride<span>Loot</span> admin</h1>
+    <p class="muted" style="margin-top:10px">Enter the admin password you set in Vercel as <b>ADMIN_TOKEN</b>.</p>
+    <form id="loginForm">
+      <label for="pw">Admin password</label>
+      <div class="row"><div><input id="pw" type="password" autocomplete="current-password" required></div><div class="fit"><button type="submit">Open</button></div></div>
+      <p class="msg" id="loginMsg" aria-live="polite"></p>
+    </form>
+  </section>
+
+  <main id="app" hidden>
+    <div class="top">
+      <h1>Ride<span>Loot</span> admin</h1>
+      <div class="row"><div class="fit"><button class="ghost" id="refresh" type="button">Refresh</button></div><div class="fit"><button class="ghost" id="logout" type="button">Sign out</button></div></div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-tab="emails" aria-selected="true">Free pack emails</button>
+      <button type="button" role="tab" data-tab="orders" aria-selected="false">Orders</button>
+      <button type="button" role="tab" data-tab="codes" aria-selected="false">Email codes</button>
+    </div>
+
+    <section id="tab-emails">
+      <div class="tools">
+        <input id="emailFilter" type="search" placeholder="Search emails" aria-label="Search emails">
+        <button class="ghost small" id="copyEmails" type="button">Copy all emails</button>
+        <button class="ghost small" id="csvEmails" type="button">Download CSV</button>
+        <span class="muted" id="emailCount"></span>
+      </div>
+      <div class="scroll" id="emails"></div>
+    </section>
+
+    <section id="tab-orders" hidden>
+      <div class="tools"><button class="ghost small" id="csvOrders" type="button">Download CSV</button><span class="muted" id="orderCount"></span></div>
+      <div class="scroll" id="orders"></div>
+    </section>
+
+    <section id="tab-codes" hidden>
+      <div class="panel" style="margin-bottom:16px">
+        <h2>Make a code</h2>
+        <p class="muted">Each code works once. Make one when someone emails you asking for a free pack, then send it to them.</p>
+        <form id="codeForm">
+          <div class="row">
+            <div><label for="note">Who is it for? (optional)</label><input id="note" type="text" maxlength="200" placeholder="their email address"></div>
+            <div class="fit" style="width:130px"><label for="packs">Packs per code</label><select id="packs"><option>1</option><option>2</option><option>3</option><option>5</option><option>10</option></select></div>
+            <div class="fit" style="width:130px"><label for="count">How many codes</label><input id="count" type="number" min="1" max="200" value="1"></div>
+            <div class="fit"><button type="submit" id="makeBtn">Make code</button></div>
+          </div>
+          <p class="msg" id="codeMsg" aria-live="polite"></p>
+        </form>
+        <div class="new" id="newCodes"></div>
+      </div>
+      <div class="tools"><span class="muted" id="codeCount"></span></div>
+      <div class="scroll" id="codes"></div>
+    </section>
+  </main>
+</div>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const KEY = 'rideloot-admin';
+  let token = '';
+  try { token = sessionStorage.getItem(KEY) || ''; } catch (e) { /* this tab only */ }
+  let data = null;
+
+  const el = (tag, text, cls) => { const n = document.createElement(tag); if (text !== undefined && text !== null) n.textContent = text; if (cls) n.className = cls; return n; };
+  const num = (n) => Number(n || 0).toLocaleString('en-US');
+  const money = (c) => '$' + (Number(c || 0) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const when = (t) => t ? new Date(t).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
+
+  async function call(path, body) {
+    try {
+      const res = await fetch('/api/' + path, { method: body ? 'POST' : 'GET', cache: 'no-store',
+        headers: Object.assign({ authorization: 'Bearer ' + token }, body ? { 'content-type': 'application/json' } : {}), body: body ? JSON.stringify(body) : undefined });
+      const out = await res.json();
+      return out && typeof out === 'object' ? out : { ok: false, error: 'server' };
+    } catch (e) { return { ok: false, error: 'network' }; }
+  }
+  const WHY = { unauthorized: 'That password is not right.', no_admin: 'No admin password is set yet. Add ADMIN_TOKEN (12 or more characters) in Vercel, then redeploy.',
+    not_ready: 'The database is not connected yet.', network: 'Could not reach the server. Check your connection.', server: 'The server had a problem. Try again.' };
+
+  function table(rows, cols, emptyText) {
+    if (!rows.length) return el('p', emptyText, 'empty');
+    const t = el('table'), head = el('tr');
+    cols.forEach((c) => head.appendChild(el('th', c.h, c.num ? 'num' : '')));
+    t.appendChild(el('thead')).appendChild(head);
+    const body = t.appendChild(el('tbody'));
+    rows.forEach((r) => { const tr = el('tr'); cols.forEach((c) => { const td = el('td', null, c.num ? 'num' : ''); const v = c.v(r); if (v instanceof Node) td.appendChild(v); else td.textContent = v; tr.appendChild(td); }); body.appendChild(tr); });
+    return t;
+  }
+  function fill(node, child) { node.textContent = ''; node.appendChild(child); }
+  function download(name, rows) {
+    const csv = rows.map((r) => r.map((v) => '"' + String(v === null || v === undefined ? '' : v).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+    const a = el('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  }
+  async function copy(text, btn) {
+    try { await navigator.clipboard.writeText(text); const old = btn.textContent; btn.textContent = 'Copied'; setTimeout(() => { btn.textContent = old; }, 1400); } catch (e) { window.prompt('Copy this:', text); }
+  }
+
+  function render() {
+    const s = data.stats;
+    const stats = $('stats'); stats.textContent = '';
+    [['Packs opened', num(s.opened)], ['Free pack emails', num(s.claims)], ['Orders', num(s.orders)], ['Packs sold', num(s.packs_sold)], ['Sales', money(s.revenue_cents)], ['Entries given out', num(s.entries)], ['Unused codes', num(s.codes_unused)]]
+      .forEach(([label, value]) => { const d = el('div', null, 'stat'); d.appendChild(el('b', value)); d.appendChild(el('span', label)); stats.appendChild(d); });
+
+    const q = $('emailFilter').value.trim().toLowerCase();
+    const emails = data.emails.filter((r) => !q || r.email.toLowerCase().includes(q));
+    $('emailCount').textContent = num(emails.length) + (q ? ' of ' + num(data.emails.length) : '') + (data.emails.length === 1 && !q ? ' email' : ' emails');
+    fill($('emails'), table(emails, [
+      { h: 'Email', v: (r) => r.email }, { h: 'Claimed', v: (r) => when(r.at) },
+      { h: 'Packs opened', num: true, v: (r) => num(r.opened) }, { h: 'Packs waiting', num: true, v: (r) => num(r.packs) }, { h: 'Entries', num: true, v: (r) => num(r.entries) },
+    ], q ? 'No emails match that search.' : 'Nobody has claimed a free pack yet.'));
+
+    $('orderCount').textContent = num(data.orders.length) + (data.orders.length === 1 ? ' order' : ' orders');
+    fill($('orders'), table(data.orders, [
+      { h: 'When', v: (r) => when(r.at) }, { h: 'Email at checkout', v: (r) => r.email || '' }, { h: 'Free pack email', v: (r) => r.claim_email || '' },
+      { h: 'Packs', num: true, v: (r) => num(r.qty) }, { h: 'Paid', num: true, v: (r) => money(r.amount_cents) },
+    ], 'No orders yet.'));
+
+    $('codeCount').textContent = num(data.codes.length) + (data.codes.length === 1 ? ' code made' : ' codes made');
+    fill($('codes'), table(data.codes, [
+      { h: 'Code', v: (r) => el('code', r.code) }, { h: 'Packs', num: true, v: (r) => num(r.packs) }, { h: 'Made for', v: (r) => r.note || '' }, { h: 'Made', v: (r) => when(r.at) },
+      { h: 'Status', v: (r) => el('span', r.redeemed_at ? 'Used ' + when(r.redeemed_at) : 'Not used yet', 'pill' + (r.redeemed_at ? '' : ' ok')) }, { h: 'Used by', v: (r) => r.used_by || '' },
+    ], 'No codes made yet.'));
+  }
+
+  async function load(fromLogin) {
+    const r = await call('admin-data');
+    if (!r.ok) {
+      $('app').hidden = true; $('login').hidden = false;
+      const m = $('loginMsg'); m.textContent = fromLogin || r.error !== 'unauthorized' ? (WHY[r.error] || WHY.server) : ''; m.className = 'msg bad';
+      if (r.error === 'unauthorized') { token = ''; try { sessionStorage.removeItem(KEY); } catch (e) { /* ignore */ } }
+      return;
+    }
+    data = r; try { sessionStorage.setItem(KEY, token); } catch (e) { /* ignore */ }
+    $('login').hidden = true; $('app').hidden = false; $('pw').value = ''; render();
+  }
+
+  $('loginForm').addEventListener('submit', (e) => { e.preventDefault(); token = $('pw').value; $('loginMsg').textContent = 'Checking.'; $('loginMsg').className = 'msg'; load(true); });
+  $('logout').addEventListener('click', () => { token = ''; data = null; try { sessionStorage.removeItem(KEY); } catch (e) { /* ignore */ } $('app').hidden = true; $('login').hidden = false; $('loginMsg').textContent = ''; });
+  $('refresh').addEventListener('click', () => load(false));
+  $('emailFilter').addEventListener('input', () => { if (data) render(); });
+  document.querySelectorAll('[data-tab]').forEach((b) => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-tab]').forEach((x) => { const on = x === b; x.setAttribute('aria-selected', on ? 'true' : 'false'); $('tab-' + x.dataset.tab).hidden = !on; });
+  }));
+  $('copyEmails').addEventListener('click', (e) => { if (data) copy(data.emails.map((r) => r.email).join(', '), e.currentTarget); });
+  $('csvEmails').addEventListener('click', () => { if (data) download('rideloot-emails.csv', [['Email', 'Claimed', 'Packs opened', 'Packs waiting', 'Entries']].concat(data.emails.map((r) => [r.email, r.at, r.opened, r.packs, r.entries]))); });
+  $('csvOrders').addEventListener('click', () => { if (data) download('rideloot-orders.csv', [['When', 'Email at checkout', 'Free pack email', 'Packs', 'Paid (USD)', 'Stripe session']].concat(data.orders.map((r) => [r.at, r.email, r.claim_email, r.qty, (r.amount_cents / 100).toFixed(2), r.session_id]))); });
+
+  $('codeForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const msg = $('codeMsg'), btn = $('makeBtn');
+    btn.disabled = true; msg.textContent = 'Making.'; msg.className = 'msg';
+    const r = await call('admin-codes', { note: $('note').value, packs: Number($('packs').value), count: Number($('count').value) });
+    btn.disabled = false;
+    if (!r.ok) { msg.textContent = WHY[r.error] || WHY.server; msg.className = 'msg bad'; return; }
+    msg.textContent = r.codes.length === 1 ? 'Code made. Copy it and send it.' : r.codes.length + ' codes made.'; msg.className = 'msg ok';
+    const box = $('newCodes'); box.textContent = '';
+    r.codes.forEach((c) => {
+      const d = el('div'); d.appendChild(el('code', c)); d.appendChild(el('span', r.packs + (r.packs === 1 ? ' pack' : ' packs') + (r.note ? ' for ' + r.note : ''), 'muted'));
+      const b = el('button', 'Copy code', 'ghost small'); b.type = 'button'; b.addEventListener('click', () => copy(c, b)); d.appendChild(b); box.appendChild(d);
+    });
+    $('note').value = ''; load(false);
+  });
+
+  if (token) load(false);
+})();
+</script>
+</body>
+</html>

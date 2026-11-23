@@ -14,7 +14,7 @@ export default route('POST', async (request) => {
     if (me.claimed) return json({ ok: true, already: true, ...(await walletState(c, w.id)) });
     const taken = await c.query('SELECT 1 FROM wallets WHERE email = $1 AND id <> $2', [email, w.id]);
     if (taken.rowCount) return fail(409, 'email_used');
-    await c.query('UPDATE wallets SET claimed = TRUE, email = $2, packs = packs + 1 WHERE id = $1', [w.id, email]);
+    await c.query('UPDATE wallets SET claimed = TRUE, claimed_at = now(), email = $2, packs = packs + 1 WHERE id = $1', [w.id, email]);
     return json({ ok: true, ...(await walletState(c, w.id)) });
   });
 });

@@ -37,7 +37,8 @@ http.createServer(async (req, res) => {
       res.writeHead(out.status, Object.fromEntries(out.headers)); res.end(Buffer.from(await out.arrayBuffer()));
       return;
     }
-    const rel = normalize(url.pathname === '/' ? '/index.html' : url.pathname).replace(/^(\.\.[/\\])+/, '');
+    let rel = normalize(url.pathname === '/' ? '/index.html' : url.pathname).replace(/^(\.\.[/\\])+/, '');
+    if (!extname(rel)) rel += '.html';   // the host serves /admin from admin.html
     const data = await readFile(join(root, 'public', rel));
     res.writeHead(200, { 'content-type': TYPES[extname(rel)] || 'application/octet-stream' }); res.end(data);
   } catch (e) { res.writeHead(404); res.end('not found'); }
