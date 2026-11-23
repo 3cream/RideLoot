@@ -42,6 +42,7 @@
     $('firstLabel').textContent = state.claimed ? 'Claimed' : 'Free';
     $('firstBtn').setAttribute('aria-label', state.claimed ? 'Free pack claimed' : 'Claim your free pack');
     $('firstBtn').disabled = state.claimed;
+    document.querySelectorAll('[data-freebtn]').forEach((b) => { b.classList.toggle('is-used', state.claimed); b.setAttribute('aria-label', state.claimed ? 'Free pack, already claimed' : 'Free pack'); });
     const no = 'No. ' + pad4(LIVE.on ? LIVE.next : state.opened + 1);
     document.querySelectorAll('[data-pack3d] .pk__num').forEach((el) => { el.textContent = no; });
   }
@@ -312,6 +313,12 @@
   heroPack.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); primary(heroPack); } });
   /* the Packs counter is about packs you hold: rip one if you have one, otherwise show My pulls. It never asks for an email. */
   $('packChip').addEventListener('click', () => { if (state.packs > 0) { closeDialogs(); enterRip(null); } else openDlg('pullsDlg'); });
+  /* "Free pack" in the bar, the menu and the footer: the email claim, once. After that it says so and does nothing else. */
+  function freePack() {
+    if (state.claimed) { closeDialogs(); toast('You have already claimed your free pack.'); return; }
+    openDlg('gateDlg');
+  }
+  document.querySelectorAll('[data-freebtn]').forEach((b) => b.addEventListener('click', freePack));
   /* the Free button is the one place that always means the free pack */
   $('firstBtn').addEventListener('click', () => { if (!state.claimed) openDlg('gateDlg'); else primary(null); });
   $('sheetList').addEventListener('click', (e) => {

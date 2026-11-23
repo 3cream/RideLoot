@@ -369,3 +369,8 @@ button.pill--price[disabled] > span::before{content:"\2713\00a0"}
 @keyframes ripme{0%,100%{transform:rotate(-7deg) translate(0,0)}50%{transform:rotate(-7deg) translate(-5px,5px)}}
 @media (prefers-reduced-motion:reduce){.hero__tag{animation:none}}
 @media (max-width:860px){.hero__tag{right:-12%;top:-33%}.hero__tag b{font-size:1.2rem}.hero__tag svg{width:32px;height:28px;margin:-1px 26px 0 0;stroke-width:3.4}}
+
+/* the free pack has been claimed: the button stays put but reads as spent */
+[data-freebtn].is-used{opacity:.5}
+.hdr__pill.is-used{filter:saturate(.3)}
+button.hdr__pill{cursor:pointer}

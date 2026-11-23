@@ -645,6 +645,11 @@ button.pill--price[disabled] > span::before{content:"\2713\00a0"}
 @media (prefers-reduced-motion:reduce){.hero__tag{animation:none}}
 @media (max-width:860px){.hero__tag{right:-12%;top:-33%}.hero__tag b{font-size:1.2rem}.hero__tag svg{width:32px;height:28px;margin:-1px 26px 0 0;stroke-width:3.4}}
 
+/* the free pack has been claimed: the button stays put but reads as spent */
+[data-freebtn].is-used{opacity:.5}
+.hdr__pill.is-used{filter:saturate(.3)}
+button.hdr__pill{cursor:pointer}
+
 /* ---------- dialogs ---------- */
 dialog.dlg{padding:0;max-width:none;max-height:none;overflow:auto;overscroll-behavior:contain;color:var(--text);border:1px solid var(--hair-2);border-radius:var(--r-lg);background:linear-gradient(160deg,#18222a,#0c1216 60%,#090d10);box-shadow:0 40px 100px -20px #000}
 dialog.dlg::backdrop{background:rgba(2,3,4,.74);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
@@ -1059,7 +1064,7 @@ dialog.inside{padding:0;overflow-y:auto}
       <button type="button" data-open="pullsDlg">My pulls</button>
     </nav>
     <div class="hdr__right">
-      <a class="hdr__pill" href="#free-packs">Free packs</a>
+      <button class="hdr__pill" type="button" data-freebtn>Free pack</button>
       <button class="hdr__packs" id="packChip" type="button" aria-label="Your packs"><span class="hdr__packico" aria-hidden="true"></span><span id="chipWord">Packs</span><b id="chipCount">0</b></button>
       <button class="hdr__icon hdr__menu" type="button" data-open="menuDlg" aria-label="Menu">
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -1290,7 +1295,7 @@ dialog.inside{padding:0;overflow-y:auto}
         <a href="#pack">Packs</a>
         <a href="#prize">The prize</a>
         <a href="#inside">What's inside</a>
-        <a href="#free-packs">Free packs</a>
+        <button type="button" data-freebtn>Free pack</button>
         <button type="button" data-open="pullsDlg">My pulls</button>
       </nav>
       <nav aria-label="Information">
@@ -1501,7 +1506,7 @@ dialog.inside{padding:0;overflow-y:auto}
     <a href="#pack" data-close>Packs</a>
     <a href="#prize" data-close>The prize</a>
     <a href="#inside" data-close>What's inside</a>
-    <a href="#free-packs" data-close>Free packs</a>
+    <button type="button" data-freebtn>Free pack</button>
     <button type="button" data-open="pullsDlg">My pulls</button>
     <button type="button" data-open="rulesDlg">Official rules</button>
   </nav>
@@ -2239,6 +2244,7 @@ dialog.inside{padding:0;overflow-y:auto}
     $('firstLabel').textContent = state.claimed ? 'Claimed' : 'Free';
     $('firstBtn').setAttribute('aria-label', state.claimed ? 'Free pack claimed' : 'Claim your free pack');
     $('firstBtn').disabled = state.claimed;
+    document.querySelectorAll('[data-freebtn]').forEach((b) => { b.classList.toggle('is-used', state.claimed); b.setAttribute('aria-label', state.claimed ? 'Free pack, already claimed' : 'Free pack'); });
     const no = 'No. ' + pad4(LIVE.on ? LIVE.next : state.opened + 1);
     document.querySelectorAll('[data-pack3d] .pk__num').forEach((el) => { el.textContent = no; });
   }
@@ -2509,6 +2515,12 @@ dialog.inside{padding:0;overflow-y:auto}
   heroPack.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); primary(heroPack); } });
   /* the Packs counter is about packs you hold: rip one if you have one, otherwise show My pulls. It never asks for an email. */
   $('packChip').addEventListener('click', () => { if (state.packs > 0) { closeDialogs(); enterRip(null); } else openDlg('pullsDlg'); });
+  /* "Free pack" in the bar, the menu and the footer: the email claim, once. After that it says so and does nothing else. */
+  function freePack() {
+    if (state.claimed) { closeDialogs(); toast('You have already claimed your free pack.'); return; }
+    openDlg('gateDlg');
+  }
+  document.querySelectorAll('[data-freebtn]').forEach((b) => b.addEventListener('click', freePack));
   /* the Free button is the one place that always means the free pack */
   $('firstBtn').addEventListener('click', () => { if (!state.claimed) openDlg('gateDlg'); else primary(null); });
   $('sheetList').addEventListener('click', (e) => {
