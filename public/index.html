@@ -2204,13 +2204,14 @@ dialog.inside{padding:0;overflow-y:auto}
 
   /* what the main button does depends on where you are: claim, rip, or get another pack */
   function ctaState() {
-    if (!state.claimed) return { label: 'Get my free pack', t: 'Free pack', s: 'Enter your email to claim it' };
+    /* packs in hand come first, however they were got: bought, by code, or free */
     if (state.packs > 0) return { label: state.packs === 1 ? 'Rip my pack' : 'Rip a pack', t: plural(state.packs, 'pack', 'packs') + ' ready', s: 'Tap to rip the top' };
+    if (!state.claimed) return { label: 'Get my free pack', t: 'Free pack', s: 'Enter your email to claim it' };
     return { label: 'Get another pack', t: 'Buy now', s: '', say: 'Buy now' };
   }
   function primary(src) {
-    if (!state.claimed) { openDlg('gateDlg'); return; }
     if (state.packs > 0) { closeDialogs(); enterRip(src || null); return; }
+    if (!state.claimed) { openDlg('gateDlg'); return; }
     openDlg('productDlg');
   }
 
@@ -2224,8 +2225,8 @@ dialog.inside{padding:0;overflow-y:auto}
     heroPack.classList.toggle('is-empty', state.claimed && n === 0);
     heroPack.setAttribute('aria-label', c.label);
     /* before the claim the hero pack wears the FREE sticker; after it, a tag asks to be ripped */
-    document.querySelectorAll('[data-freepack]').forEach((el) => { el.dataset.free = state.claimed ? '0' : '1'; });
-    $('heroTag').hidden = !state.claimed || n === 0;
+    document.querySelectorAll('[data-freepack]').forEach((el) => { el.dataset.free = state.claimed || n > 0 ? '0' : '1'; });
+    $('heroTag').hidden = n === 0;
     $('firstLabel').textContent = state.claimed ? 'Claimed' : 'Free';
     $('firstBtn').setAttribute('aria-label', state.claimed ? 'Free pack claimed' : 'Claim your free pack');
     $('firstBtn').disabled = state.claimed;
@@ -2322,7 +2323,7 @@ dialog.inside{padding:0;overflow-y:auto}
     try { seen = sessionStorage.getItem('rl-gate') === '1'; } catch (e) { /* ignore */ }
     if (seen) return;
     setTimeout(() => {
-      if (state.claimed || R || document.querySelector('dialog[open]') || window.scrollY > window.innerHeight * 0.6) return;
+      if (state.claimed || state.packs > 0 || R || document.querySelector('dialog[open]') || window.scrollY > window.innerHeight * 0.6) return;
       try { sessionStorage.setItem('rl-gate', '1'); } catch (e) { /* ignore */ }
       openDlg('gateDlg', true);
     }, 2600);
@@ -2494,8 +2495,10 @@ dialog.inside{padding:0;overflow-y:auto}
   });
   heroPack.addEventListener('click', () => primary(heroPack));
   heroPack.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); primary(heroPack); } });
-  $('packChip').addEventListener('click', () => primary(null));
-  $('firstBtn').addEventListener('click', () => primary(null));
+  /* the Packs counter is about packs you hold: rip one if you have one, otherwise show My pulls. It never asks for an email. */
+  $('packChip').addEventListener('click', () => { if (state.packs > 0) { closeDialogs(); enterRip(null); } else openDlg('pullsDlg'); });
+  /* the Free button is the one place that always means the free pack */
+  $('firstBtn').addEventListener('click', () => { if (!state.claimed) openDlg('gateDlg'); else primary(null); });
   $('sheetList').addEventListener('click', (e) => {
     const li = e.target.closest('.sheet__item'); if (!li) return;
     li.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: narrow.matches ? 'end' : 'center' });
