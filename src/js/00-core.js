@@ -5,7 +5,7 @@
   const CONFIG = {
     freeCode: 'FREEPACK',
     freeEmail: 'rideloot@gmail.com',
-    packPrice: 1,
+    packPrice: 20,
     prizes: [
       { id: 'car',      tier: 'grand',     name: 'BMW M3',             note: 'Grand prize',   weight: 0,    icon: 'car', photo: 'assets/car.webp', at: 10000 },
       { id: 'ent75k',   tier: 'legendary', name: '75,000 entries',     note: '', weight: 500, icon: 'ticket', entries: 75000 },
