@@ -7,7 +7,7 @@
     freeEmail: 'rideloot@gmail.com',
     packPrice: 20,
     prizes: [
-      { id: 'car',      tier: 'grand',     name: 'BMW M3',             note: 'Grand prize',   weight: 0,    icon: 'car', photo: 'assets/car.webp', at: 10000 },
+      { id: 'car',      tier: 'grand',     name: 'BMW M3 Competition',             note: 'Grand prize',   weight: 0,    icon: 'car', photo: 'assets/car.webp', at: 10000 },
       { id: 'ent75k',   tier: 'legendary', name: '75,000 entries',     note: '', weight: 500, icon: 'ticket', entries: 75000 },
       { id: 'ent25k',   tier: 'epic',      name: '25,000 entries',     note: '', weight: 1000, icon: 'ticket', entries: 25000 },
       { id: 'ent10k',   tier: 'rare',      name: '10,000 entries',     note: '', weight: 2000, icon: 'ticket', entries: 10000 },
