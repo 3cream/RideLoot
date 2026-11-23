@@ -1259,7 +1259,6 @@ dialog.inside{padding:0;overflow-y:auto}
     <div class="faq__list">
       <details class="acc"><summary>Do I have to buy anything?</summary><div class="acc__body">No. Your first pack is free with your email, and you can get more free packs by emailing us for a code. See "Free packs" below. Free packs and paid packs are the same pack with the same odds.</div></details>
       <details class="acc"><summary>How many prizes are in a pack?</summary><div class="acc__body">One. Every pack holds exactly one prize card.</div></details>
-      <details class="acc"><summary>What are the odds?</summary><div class="acc__body"><p>They're posted for every prize in the prize sheet above.</p><ul class="faqodds" id="faqOdds"></ul></div></details>
       <details class="acc"><summary>What comes with a paid pack?</summary><div class="acc__body">A digital RideLoot wallpaper with a value of $20 is delivered with each pack. It comes with a RideLoot pack you can open for a guaranteed chance to win entries for the final draw.</div></details>
       <details class="acc"><summary>Who can play?</summary><div class="acc__body">Legal residents of the 50 United States and Washington, D.C., who are 18 or older. Residents of Florida and New York can't take part.</div></details>
       <details class="acc" id="free-packs"><summary>Free packs</summary><div class="acc__body">
@@ -2262,8 +2261,6 @@ dialog.inside{padding:0;overflow-y:auto}
     sheetItems = Array.from($('sheetList').children);
     const car = CONFIG.prizes.find((p) => p.tier === 'grand'), carOdds = car ? oddsText(car) : '';
     document.querySelectorAll('[data-odds-car]').forEach((el) => { el.textContent = carOdds; });
-    $('faqOdds').innerHTML = CONFIG.prizes.map((p) =>
-      '<li data-tier="' + p.tier + '"><span class="faqodds__tier">' + TIERS[p.tier].label + '</span><span class="faqodds__name">' + esc(p.name) + '</span><b>' + (p.at ? p.at.toLocaleString('en-US') + 'th pack' : oddsText(p)) + '</b></li>').join('');
     $('insideGrid').innerHTML = CONFIG.prizes.map((p) =>
       '<article class="inside__item" data-tier="' + p.tier + '"><div class="inside__card">' + cardHTML(p, 0, 'pc--static is-open') + '</div>' +
       '<span class="sheet__tier">' + TIERS[p.tier].label + '</span><h3 class="inside__name">' + esc(p.name) + '</h3><p class="inside__odds">' + oddsText(p) + '</p></article>'

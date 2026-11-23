@@ -59,8 +59,6 @@
     sheetItems = Array.from($('sheetList').children);
     const car = CONFIG.prizes.find((p) => p.tier === 'grand'), carOdds = car ? oddsText(car) : '';
     document.querySelectorAll('[data-odds-car]').forEach((el) => { el.textContent = carOdds; });
-    $('faqOdds').innerHTML = CONFIG.prizes.map((p) =>
-      '<li data-tier="' + p.tier + '"><span class="faqodds__tier">' + TIERS[p.tier].label + '</span><span class="faqodds__name">' + esc(p.name) + '</span><b>' + (p.at ? p.at.toLocaleString('en-US') + 'th pack' : oddsText(p)) + '</b></li>').join('');
     $('insideGrid').innerHTML = CONFIG.prizes.map((p) =>
       '<article class="inside__item" data-tier="' + p.tier + '"><div class="inside__card">' + cardHTML(p, 0, 'pc--static is-open') + '</div>' +
       '<span class="sheet__tier">' + TIERS[p.tier].label + '</span><h3 class="inside__name">' + esc(p.name) + '</h3><p class="inside__odds">' + oddsText(p) + '</p></article>'
