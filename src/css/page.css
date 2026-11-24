@@ -417,3 +417,8 @@ button.hdr__pill{cursor:pointer}
 .pcard__meta--wrap{white-space:normal !important;text-wrap:balance;max-width:36ch}
 .pill--sold{display:inline-grid;place-items:center;flex:none;min-width:124px;height:58px;border-radius:12px;font-family:var(--font-display);font-style:italic;font-weight:800;text-transform:uppercase;letter-spacing:.03em;font-size:1.15rem;color:#9aa6b2;background:linear-gradient(180deg,#2b3036,#1a1e23);border:1px solid var(--hair-2)}
 @media (max-width:560px){.pill--sold{min-width:96px;height:46px;font-size:1rem}}
+/* compact video band inside the product dialog */
+.final--mini{min-height:190px;border-radius:14px;margin-top:16px;align-content:center}
+.final--mini .final__glass{padding:26px 18px;max-width:none}
+.final--mini .display span{font-size:1.5rem;line-height:1.05}
+@media (max-width:560px){.final--mini{min-height:160px}.final--mini .display span{font-size:1.25rem}}
