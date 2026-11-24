@@ -120,7 +120,7 @@
   function entriesTotal() { return CONFIG.prizes.reduce((n, p) => n + (p.entries || 0) * (state.pulls[p.id] || 0), 0); }
   const num = (n) => n.toLocaleString('en-US');
   function oddsText(p) {
-    if (p.at) return 'Pack No. ' + p.at.toLocaleString('en-US');
+    if (p.at) return '1 in ' + p.at.toLocaleString('en-US');
     /* shown as a share of packs: 1%, 2.5%, 0.01% */
     const pct = p.weight / TOTAL * 100;
     return (pct >= 10 ? Math.round(pct) : Number(pct.toPrecision(2))) + '%';

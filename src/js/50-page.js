@@ -478,8 +478,6 @@
     renderCounts(); renderPulls();
     requestAnimationFrame(ambient);
     if (location.hash === '#free-packs') $('free-packs').open = true;
-    const back = /[?&](paid|canceled)=/.test(location.search);
-    if (!back) autoGate();
     goLive();
   }
 
