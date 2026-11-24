@@ -360,6 +360,9 @@
       msg.textContent = 'Enter a valid email address, like name@example.com.'; msg.className = 'formmsg is-err';
       input.focus(); return;
     }
+    if (!$('gateTos').checked) {
+      msg.textContent = 'Please agree to the Terms of Service to continue.'; msg.className = 'formmsg is-err'; return;
+    }
     if (LIVE.on) { claimLive(input, msg); return; }
     input.value = '';
     if (!state.claimed) { state.claimed = true; state.packs += 1; save(); freeNext = true; }
@@ -391,6 +394,9 @@
   function renderBuy() { const q = qty(); $('buyLabel').textContent = 'Purchase ' + plural(q, 'pack', 'packs') + ' · ' + money(q * CONFIG.packPrice); }
   $('qty').addEventListener('change', renderBuy);
   $('buyBtn').addEventListener('click', () => {
+    if (!$('buyTos').checked) {
+      const m = $('buyMsg'); m.textContent = 'Please agree to the Terms of Service to continue.'; m.className = 'formmsg is-err'; return;
+    }
     const q = qty();
     if (LIVE.on) { buyLive(q); return; }
     state.packs += q; save(); renderCounts(); renderPulls();

@@ -1351,6 +1351,7 @@ dialog.inside{padding:0;overflow-y:auto}
         <input class="input" id="gateEmail" name="email" type="email" autocomplete="email" inputmode="email" placeholder="your email address">
         <button class="btn btn--sm" type="submit"><span>Get my free pack</span></button>
       </form>
+      <label class="check check--tos"><input type="checkbox" id="gateTos"><span>I acknowledge and agree to the <button class="linkbtn" type="button" data-open="termsDlg">Terms of Service</button>.</span></label>
       <p class="formmsg" id="gateMsg" aria-live="polite"></p>
       <p class="fine">No purchase necessary. U.S. residents 18 or older, except Florida and New York. By continuing you agree to the <button class="linkbtn" type="button" data-open="rulesDlg">official rules</button> and to get emails from RideLoot.</p>
     </div>
@@ -1384,6 +1385,7 @@ dialog.inside{padding:0;overflow-y:auto}
           <label><input type="radio" name="qty" value="5"><span>5</span></label>
           <label><input type="radio" name="qty" value="10"><span>10</span></label>
         </fieldset>
+        <label class="check check--tos"><input type="checkbox" id="buyTos"><span>I acknowledge and agree to the <button class="linkbtn" type="button" data-open="termsDlg">Terms of Service</button>.</span></label>
         <button class="btn btn--wide" id="buyBtn" type="button"><span id="buyLabel">Purchase 1 pack</span></button>
         <p class="formmsg" id="buyMsg" aria-live="polite"></p>
         <button class="btn btn--sm btn--ghost" id="buyRip" type="button" hidden><span>Rip a pack now</span></button>
@@ -2564,6 +2566,9 @@ dialog.inside{padding:0;overflow-y:auto}
       msg.textContent = 'Enter a valid email address, like name@example.com.'; msg.className = 'formmsg is-err';
       input.focus(); return;
     }
+    if (!$('gateTos').checked) {
+      msg.textContent = 'Please agree to the Terms of Service to continue.'; msg.className = 'formmsg is-err'; return;
+    }
     if (LIVE.on) { claimLive(input, msg); return; }
     input.value = '';
     if (!state.claimed) { state.claimed = true; state.packs += 1; save(); freeNext = true; }
@@ -2595,6 +2600,9 @@ dialog.inside{padding:0;overflow-y:auto}
   function renderBuy() { const q = qty(); $('buyLabel').textContent = 'Purchase ' + plural(q, 'pack', 'packs') + ' · ' + money(q * CONFIG.packPrice); }
   $('qty').addEventListener('change', renderBuy);
   $('buyBtn').addEventListener('click', () => {
+    if (!$('buyTos').checked) {
+      const m = $('buyMsg'); m.textContent = 'Please agree to the Terms of Service to continue.'; m.className = 'formmsg is-err'; return;
+    }
     const q = qty();
     if (LIVE.on) { buyLive(q); return; }
     state.packs += q; save(); renderCounts(); renderPulls();
