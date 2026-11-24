@@ -398,17 +398,18 @@ button.hdr__pill{cursor:pointer}
   repeating-linear-gradient(90deg,rgba(255,255,255,.028) 0 1px,transparent 1px 44px),
   linear-gradient(180deg,#121a20,#080c0f);cursor:grab}
 .viewer--hat.is-drag{cursor:grabbing}
-.viewer--hat .hatshot{width:88%;height:88%;object-fit:contain;filter:drop-shadow(0 30px 34px rgba(0,0,0,.55));
+.viewer--hat .hatshot{width:66%;height:66%;object-fit:contain;filter:drop-shadow(0 30px 34px rgba(0,0,0,.55));
   translate:0 0;transform:translateX(var(--hx,0)) rotate(var(--hr,0deg));transition:transform .3s ease-out;
   animation:hatbob 6s ease-in-out infinite;will-change:transform,translate}
 @keyframes hatbob{0%,100%{translate:0 0}50%{translate:0 -16px}}
 @media (prefers-reduced-motion:reduce){.viewer--hat .hatshot{animation:none}}
-.estick{position:absolute;left:18px;bottom:18px;z-index:3;transform:rotate(-7deg);
-  font-family:var(--font-display);font-style:italic;font-weight:800;text-transform:uppercase;letter-spacing:.03em;
-  font-size:1rem;color:#fff;padding:9px 16px 10px;border-radius:12px;
-  background:linear-gradient(180deg,#3aa0ff,#0a84ff 55%,#0057db);
-  border:1px solid rgba(255,255,255,.4);box-shadow:0 10px 24px -8px rgba(10,132,255,.7),inset 0 1px 0 rgba(255,255,255,.5)}
-@media (max-width:560px){.estick{font-size:.82rem;left:12px;bottom:12px;padding:7px 12px 8px}}
+.estick{position:absolute;left:14px;bottom:14px;z-index:3;display:grid;place-items:center;align-content:center;gap:2px;width:128px;height:128px;transform:rotate(-12deg);filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))}
+.estick::before{content:"";position:absolute;inset:0;clip-path:polygon({{BURST_POLY}});background:radial-gradient(circle at 32% 26%,#ffffff,#f2f7fb 55%,#cfdbe6 100%)}
+.estick::after{content:"";position:absolute;inset:9%;border-radius:50%;background:radial-gradient(circle at 34% 26%,#6cc0ff,#0a84ff 46%,#0050d0 100%);box-shadow:0 0 0 2px #04070b,inset 0 2px 7px rgba(255,255,255,.45)}
+.estick b,.estick i{position:relative;z-index:1;color:#fff;text-transform:uppercase;font-family:var(--font-display);text-shadow:0 1px 0 rgba(0,20,60,.6);text-align:center;line-height:.9}
+.estick b{font-style:italic;font-weight:900;font-size:2rem;padding-right:.04em}
+.estick i{font-style:normal;font-weight:700;font-size:.6rem;letter-spacing:.12em;margin-top:3px}
+@media (max-width:560px){.estick{width:104px;height:104px;left:10px;bottom:10px}.estick b{font-size:1.6rem}}}
 .soldout{position:absolute;top:16px;right:16px;z-index:3;font-family:var(--font-display);font-style:italic;font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:.82rem;color:#fff;background:#0b0e12;padding:7px 15px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.22);box-shadow:0 8px 20px rgba(0,0,0,.35)}
 .pcard__meta--wrap{white-space:normal !important;text-wrap:balance;max-width:36ch}
 .pill--sold{display:inline-grid;place-items:center;flex:none;min-width:124px;height:54px;align-self:flex-start;margin-top:22px;margin-right:8px;border-radius:12px;font-family:var(--font-display);font-style:italic;font-weight:800;text-transform:uppercase;letter-spacing:.03em;font-size:1.15rem;color:#9aa6b2;background:linear-gradient(180deg,#2b3036,#1a1e23);border:1px solid var(--hair-2)}

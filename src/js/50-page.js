@@ -159,7 +159,7 @@
     /* the glass bar darkens while the bright photos or the chrome band are behind it */
     hdr.classList.toggle('is-smoke', (sr.top < 92 && sr.bottom > 8) || (br.top < 92 && br.bottom > 8));
     const pinned = sr.top < vh * 0.4 && sr.bottom > vh * 0.6;
-    fab.classList.toggle('is-on', y > heroEl.offsetHeight * 0.5 && !pinned && footEl.getBoundingClientRect().top > vh - 40);
+    fab.classList.remove('is-on');   /* floating free-pack pill disabled */
     if (sr.bottom > -vh && sr.top < vh * 2) {
       const p = clamp(-sr.top / Math.max(1, sr.height - vh), 0, 1);
       const open = 1, e = 1;   /* the photos fill the screen from the first moment */
@@ -309,8 +309,9 @@
     if (o) { e.preventDefault(); openDlg(o.dataset.open); return; }
     if (t.closest('[data-cta]')) primary(null);
   });
-  heroPack.addEventListener('click', () => primary(heroPack));
-  heroPack.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); primary(heroPack); } });
+  function packAction() { if (state.packs > 0) { closeDialogs(); enterRip(null); } else openDlg('productDlg'); }
+  heroPack.addEventListener('click', packAction);
+  heroPack.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); packAction(); } });
   /* the Packs counter is about packs you hold: rip one if you have one, otherwise show My pulls. It never asks for an email. */
   $('packChip').addEventListener('click', () => { if (state.packs > 0) { closeDialogs(); enterRip(null); } else openDlg('pullsDlg'); });
   /* "Free pack" in the bar, the menu and the footer: the email claim, once. After that it says so and does nothing else. */
