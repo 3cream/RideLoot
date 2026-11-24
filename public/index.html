@@ -434,7 +434,10 @@ button.pill--price[disabled] > span::before{content:"\2713\00a0"}
 .slide{position:absolute;inset:0;margin:0;overflow:hidden;opacity:0;visibility:hidden;transform:scale(1.05);transition:opacity .6s ease,transform 1s cubic-bezier(.2,.8,.2,1),visibility 0s .6s}
 .slide.is-on{opacity:1;visibility:visible;transform:none;transition:opacity .6s ease,transform 1s cubic-bezier(.2,.8,.2,1),visibility 0s}
 .slide__cover{width:100%;height:100%;max-width:none;object-fit:cover}
-/* on an upright screen a wide car would lose both ends, so the photo is shown whole over a blurred copy of itself */
+/* on an upright phone, full-height cover zooms in too hard, so each slide is shown in the same fixed 3:4 card, centered */
+@media (max-width:860px){
+  .slide__cover{position:absolute;left:0;top:50%;height:auto;aspect-ratio:3/4;transform:translateY(-50%)}
+}
 .stage__pin::after{content:"";position:absolute;left:0;right:0;bottom:0;z-index:1;height:30%;pointer-events:none;opacity:0;transition:opacity .4s;background:linear-gradient(0deg,rgba(3,6,10,.88),rgba(3,6,10,0))}
 .stage__pin.is-open::after{opacity:1}
 .stage__hud{position:absolute;z-index:2;left:var(--pad);right:var(--pad);bottom:26px;display:flex;align-items:baseline;gap:12px;opacity:0;transition:opacity .4s;pointer-events:none;filter:drop-shadow(0 2px 10px rgba(0,0,0,.9))}
