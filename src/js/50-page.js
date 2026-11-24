@@ -408,6 +408,7 @@
   });
   $('buyRip').addEventListener('click', () => { closeDialogs(); enterRip(null); });
   $('demoBtn').addEventListener('click', () => { closeDialogs(); enterRip(null, { demo: true }); });
+  document.querySelectorAll('[data-demo]').forEach((b) => b.addEventListener('click', () => { closeDialogs(); enterRip(null, { demo: true }); }));
   /* the Series 1 Cap floats and drifts a little left/right with the pointer, like the pack */
   (function hatParallax() {
     const hv = $('hatViewer'); if (!hv) return;

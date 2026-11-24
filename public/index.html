@@ -408,6 +408,7 @@ button.pill--price[disabled] > span::before{content:"\2713\00a0"}
   linear-gradient(180deg,#121a20,#080c0f)}
 .viewer__tag{position:absolute;left:20px;top:18px;z-index:2;font-family:var(--font-display);font-weight:600;font-size:.86rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .viewer__chip{position:absolute;right:16px;top:14px;z-index:2}
+.viewer__chips{position:absolute;right:16px;top:14px;z-index:2;display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;max-width:calc(100% - 32px)}
 .viewer__chip--btn{cursor:pointer;padding:5px 11px 6px;border:1px solid rgba(120,196,255,.7);border-radius:999px;color:#fff;font-family:var(--font-display);font-style:italic;font-weight:700;font-size:.9rem;line-height:1;letter-spacing:.06em;text-transform:uppercase;text-shadow:0 1px 2px rgba(0,0,0,.6);
   background:linear-gradient(180deg,rgba(93,184,255,.42),rgba(10,132,255,.2) 55%,rgba(10,132,255,.32));-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 0 rgba(0,0,0,.4),0 0 16px -4px rgba(10,132,255,.9);transition:transform .15s,filter .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent}
@@ -679,7 +680,7 @@ button.hdr__pill{cursor:pointer}
 @keyframes hatbob{0%,100%{translate:0 0}50%{translate:0 -16px}}
 @media (prefers-reduced-motion:reduce){.viewer--hat .hatshot{animation:none}}
 .pcard__cta{display:flex;align-items:center;gap:12px;margin-top:22px;margin-right:8px;flex-wrap:wrap;justify-content:flex-end}
-.estick{display:inline-flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:2px;height:58px;padding:0 20px;border-radius:14px;line-height:1;
+.estick{display:inline-flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:2px;height:58px;padding:0 22px;border-radius:14px;line-height:1;
   background:linear-gradient(180deg,rgba(130,195,255,.18),rgba(10,132,255,.14));border:1px solid rgba(150,205,255,.38);
   -webkit-backdrop-filter:blur(12px) saturate(160%);backdrop-filter:blur(12px) saturate(160%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 12px 26px -12px rgba(10,132,255,.55)}
@@ -1184,7 +1185,10 @@ dialog.inside{padding:0;overflow-y:auto}
       <article class="pcard pcard--big">
         <div class="viewer" id="packViewer" data-viewer>
           <span class="viewer__tag">RL / Pack</span>
-          <button class="chip chip--chrome viewer__chip viewer__chip--btn" type="button" data-open="insideDlg">See what's inside</button>
+          <div class="viewer__chips">
+            <button class="chip chip--chrome viewer__chip--btn" type="button" data-demo>Free demo</button>
+            <button class="chip chip--chrome viewer__chip--btn" type="button" data-open="insideDlg">See what's inside</button>
+          </div>
           <span class="viewer__mark viewer__mark--a" aria-hidden="true"></span><span class="viewer__mark viewer__mark--b" aria-hidden="true"></span>
           <div class="viewer__pack"><div data-pack3d></div><span class="viewer__floor" aria-hidden="true"></span></div>
           <span class="chip viewer__hint">3D &#183; drag to rotate</span>
@@ -2689,6 +2693,7 @@ dialog.inside{padding:0;overflow-y:auto}
   });
   $('buyRip').addEventListener('click', () => { closeDialogs(); enterRip(null); });
   $('demoBtn').addEventListener('click', () => { closeDialogs(); enterRip(null, { demo: true }); });
+  document.querySelectorAll('[data-demo]').forEach((b) => b.addEventListener('click', () => { closeDialogs(); enterRip(null, { demo: true }); }));
   /* the Series 1 Cap floats and drifts a little left/right with the pointer, like the pack */
   (function hatParallax() {
     const hv = $('hatViewer'); if (!hv) return;
