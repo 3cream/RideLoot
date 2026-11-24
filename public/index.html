@@ -665,7 +665,6 @@ button.hdr__pill{cursor:pointer}
 .nw{white-space:nowrap}
 /* standalone video band (text added later) */
 .final--video{min-height:clamp(320px,52vw,560px);align-content:center}
-.final--video .final__scrim{background:linear-gradient(180deg,rgba(4,8,12,.22),rgba(4,8,12,.4))}
 .final--video .final__glass:empty{padding:0;min-height:inherit}
 
 /* ---------- dialogs ---------- */
@@ -1200,17 +1199,6 @@ dialog.inside{padding:0;overflow-y:auto}
   </div>
 </section>
 
-<!-- ============ prize video band ============ -->
-<section class="sec sec--tight">
-  <div class="wrap">
-    <div class="final final--video">
-      <video class="final__vid" autoplay muted loop playsinline preload="metadata" poster="assets/prize-loop.jpg" aria-hidden="true"><source src="assets/prize-loop.mp4" type="video/mp4"></video>
-      <span class="final__scrim" aria-hidden="true"></span>
-      <div class="final__glass" id="prizeBandText"></div>
-    </div>
-  </div>
-</section>
-
 <!-- ============ the prize: pinned gallery ============ -->
 <section class="stage" id="prize" aria-labelledby="prizeTitle">
   <div class="stage__pin is-open" id="stagePin">
@@ -1224,10 +1212,6 @@ dialog.inside{padding:0;overflow-y:auto}
       <figure class="slide slide--fit" data-cap="Front">
         <img class="slide__fill" src="assets/m3-studio-front.webp" alt="" width="1647" height="2928" loading="lazy">
         <img class="slide__cover" src="assets/m3-studio-front.webp" alt="The BMW M3 Competition seen head-on" width="1647" height="2928" loading="lazy" style="object-position:50% 50%">
-      </figure>
-      <figure class="slide slide--fit" data-cap="Passenger side">
-        <img class="slide__fill" src="assets/m3-studio-34b.webp" alt="" width="1660" height="2043" loading="lazy">
-        <img class="slide__cover" src="assets/m3-studio-34b.webp" alt="The BMW M3 Competition from the passenger side, front three-quarter view" width="1660" height="2043" loading="lazy" style="object-position:50% 95%">
       </figure>
       <figure class="slide slide--fit" data-cap="In the garage">
         <img class="slide__fill" src="assets/m3-garage.webp" alt="" width="1642" height="2872" loading="lazy">
@@ -1253,6 +1237,19 @@ dialog.inside{padding:0;overflow-y:auto}
   </div>
 </section>
 
+
+<!-- ============ prize video band ============ -->
+<section class="sec sec--tight">
+  <div class="wrap">
+    <div class="final final--video">
+      <video class="final__vid" autoplay muted loop playsinline preload="metadata" poster="assets/prize-loop.jpg" aria-hidden="true"><source src="assets/prize-loop.mp4" type="video/mp4"></video>
+      <span class="final__scrim" aria-hidden="true"></span>
+      <div class="final__glass">
+        <h2 class="display"><span>The keys</span><span>are in a pack.</span><span class="t-loot">Go find them.</span></h2>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ============ what's inside: the prize sheet ============ -->
 <section class="sec" id="inside">

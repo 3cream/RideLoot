@@ -390,5 +390,4 @@ button.hdr__pill{cursor:pointer}
 .nw{white-space:nowrap}
 /* standalone video band (text added later) */
 .final--video{min-height:clamp(320px,52vw,560px);align-content:center}
-.final--video .final__scrim{background:linear-gradient(180deg,rgba(4,8,12,.22),rgba(4,8,12,.4))}
 .final--video .final__glass:empty{padding:0;min-height:inherit}
