@@ -18,12 +18,11 @@
   function ctaState() {
     /* packs in hand come first, however they were got: bought, by code, or free */
     if (state.packs > 0) return { label: state.packs === 1 ? 'Rip my pack' : 'Rip a pack', t: plural(state.packs, 'pack', 'packs') + ' ready', s: 'Tap to rip the top' };
-    if (!state.claimed) return { label: 'Get my free pack', t: 'Free pack', s: 'Enter your email to claim it' };
-    return { label: 'Get another pack', t: 'Buy now', s: '', say: 'Buy now' };
+    if (!state.claimed) return { label: 'Get a pack now', t: 'Get a pack', s: '', say: 'Get a pack' };
+    return { label: 'Get a pack now', t: 'Get a pack', s: '', say: 'Get a pack' };
   }
   function primary(src) {
     if (state.packs > 0) { closeDialogs(); enterRip(src || null); return; }
-    if (!state.claimed) { openDlg('gateDlg'); return; }
     openDlg('productDlg');
   }
 
@@ -309,7 +308,7 @@
     if (o) { e.preventDefault(); openDlg(o.dataset.open); return; }
     if (t.closest('[data-cta]')) primary(null);
   });
-  function packAction() { if (state.packs > 0) { closeDialogs(); enterRip(null); } else openDlg('productDlg'); }
+  function packAction() { if (state.packs > 0) { closeDialogs(); enterRip(null); } else { const s = $('pack'); if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
   heroPack.addEventListener('click', packAction);
   heroPack.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); packAction(); } });
   /* the Packs counter is about packs you hold: rip one if you have one, otherwise show My pulls. It never asks for an email. */

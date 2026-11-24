@@ -678,13 +678,14 @@ button.hdr__pill{cursor:pointer}
   animation:hatbob 6s ease-in-out infinite;will-change:transform,translate}
 @keyframes hatbob{0%,100%{translate:0 0}50%{translate:0 -16px}}
 @media (prefers-reduced-motion:reduce){.viewer--hat .hatshot{animation:none}}
-.estick{position:absolute;left:14px;bottom:14px;z-index:3;display:grid;place-items:center;align-content:center;gap:2px;width:128px;height:128px;transform:rotate(-12deg);filter:drop-shadow(0 10px 16px rgba(0,0,0,.55))}
-.estick::before{content:"";position:absolute;inset:0;clip-path:polygon(50.00% 0.00%, 55.93% 4.99%, 62.94% 1.70%, 67.37% 8.06%, 75.00% 6.70%, 77.64% 13.98%, 85.36% 14.64%, 86.02% 22.36%, 93.30% 25.00%, 91.94% 32.63%, 98.30% 37.06%, 95.01% 44.07%, 100.00% 50.00%, 95.01% 55.93%, 98.30% 62.94%, 91.94% 67.37%, 93.30% 75.00%, 86.02% 77.64%, 85.36% 85.36%, 77.64% 86.02%, 75.00% 93.30%, 67.37% 91.94%, 62.94% 98.30%, 55.93% 95.01%, 50.00% 100.00%, 44.07% 95.01%, 37.06% 98.30%, 32.63% 91.94%, 25.00% 93.30%, 22.36% 86.02%, 14.64% 85.36%, 13.98% 77.64%, 6.70% 75.00%, 8.06% 67.37%, 1.70% 62.94%, 4.99% 55.93%, 0.00% 50.00%, 4.99% 44.07%, 1.70% 37.06%, 8.06% 32.63%, 6.70% 25.00%, 13.98% 22.36%, 14.64% 14.64%, 22.36% 13.98%, 25.00% 6.70%, 32.63% 8.06%, 37.06% 1.70%, 44.07% 4.99%);background:radial-gradient(circle at 32% 26%,#ffffff,#f2f7fb 55%,#cfdbe6 100%)}
-.estick::after{content:"";position:absolute;inset:9%;border-radius:50%;background:radial-gradient(circle at 34% 26%,#6cc0ff,#0a84ff 46%,#0050d0 100%);box-shadow:0 0 0 2px #04070b,inset 0 2px 7px rgba(255,255,255,.45)}
-.estick b,.estick i{position:relative;z-index:1;color:#fff;text-transform:uppercase;font-family:var(--font-display);text-shadow:0 1px 0 rgba(0,20,60,.6);text-align:center;line-height:.9}
-.estick b{font-style:italic;font-weight:900;font-size:2rem;padding-right:.04em}
-.estick i{font-style:normal;font-weight:700;font-size:.6rem;letter-spacing:.12em;margin-top:3px}
-@media (max-width:560px){.estick{width:104px;height:104px;left:10px;bottom:10px}.estick b{font-size:1.6rem}}}
+.estick{position:absolute;right:18px;bottom:18px;z-index:3;display:grid;place-items:center;align-content:center;gap:2px;width:134px;height:134px;transform:rotate(9deg);filter:drop-shadow(0 14px 22px rgba(0,0,0,.6))}
+.estick__glass{position:absolute;inset:-18%;z-index:0;border-radius:50%;background:radial-gradient(circle at 36% 28%,rgba(255,255,255,.26),rgba(150,200,255,.12) 52%,rgba(255,255,255,0) 74%);-webkit-backdrop-filter:blur(8px) saturate(150%);backdrop-filter:blur(8px) saturate(150%);border:1px solid rgba(255,255,255,.3);box-shadow:inset 0 2px 12px rgba(255,255,255,.32),0 12px 30px -8px rgba(10,132,255,.55)}
+.estick::before{content:"";position:absolute;inset:0;z-index:1;clip-path:polygon(50.00% 0.00%, 55.93% 4.99%, 62.94% 1.70%, 67.37% 8.06%, 75.00% 6.70%, 77.64% 13.98%, 85.36% 14.64%, 86.02% 22.36%, 93.30% 25.00%, 91.94% 32.63%, 98.30% 37.06%, 95.01% 44.07%, 100.00% 50.00%, 95.01% 55.93%, 98.30% 62.94%, 91.94% 67.37%, 93.30% 75.00%, 86.02% 77.64%, 85.36% 85.36%, 77.64% 86.02%, 75.00% 93.30%, 67.37% 91.94%, 62.94% 98.30%, 55.93% 95.01%, 50.00% 100.00%, 44.07% 95.01%, 37.06% 98.30%, 32.63% 91.94%, 25.00% 93.30%, 22.36% 86.02%, 14.64% 85.36%, 13.98% 77.64%, 6.70% 75.00%, 8.06% 67.37%, 1.70% 62.94%, 4.99% 55.93%, 0.00% 50.00%, 4.99% 44.07%, 1.70% 37.06%, 8.06% 32.63%, 6.70% 25.00%, 13.98% 22.36%, 14.64% 14.64%, 22.36% 13.98%, 25.00% 6.70%, 32.63% 8.06%, 37.06% 1.70%, 44.07% 4.99%);background:radial-gradient(circle at 32% 24%,#ffffff,#eaf3fb 52%,#c3d4e4 100%);filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
+.estick::after{content:"";position:absolute;inset:11%;z-index:2;border-radius:50%;background:radial-gradient(130% 95% at 32% 18%,rgba(255,255,255,.92),rgba(255,255,255,0) 44%),radial-gradient(circle at 50% 56%,#6cc0ff,#0a84ff 48%,#0050d0 100%);box-shadow:0 0 0 2px #04070b,inset 0 2px 7px rgba(255,255,255,.6),inset 0 -9px 16px rgba(0,28,86,.6)}
+.estick b,.estick i{position:relative;z-index:3;color:#fff;text-transform:uppercase;font-family:var(--font-display);text-shadow:0 1px 0 rgba(0,20,60,.65),0 0 10px rgba(0,40,110,.4);text-align:center;line-height:.9}
+.estick b{font-style:italic;font-weight:900;font-size:2.05rem;padding-right:.04em}
+.estick i{font-style:normal;font-weight:700;font-size:.6rem;letter-spacing:.13em;margin-top:3px}
+@media (max-width:560px){.estick{width:106px;height:106px;right:12px;bottom:12px}.estick b{font-size:1.62rem}}}
 .soldout{position:absolute;top:16px;right:16px;z-index:3;font-family:var(--font-display);font-style:italic;font-weight:800;text-transform:uppercase;letter-spacing:.05em;font-size:.82rem;color:#fff;background:#0b0e12;padding:7px 15px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.22);box-shadow:0 8px 20px rgba(0,0,0,.35)}
 .pcard__meta--wrap{white-space:normal !important;text-wrap:balance;max-width:36ch}
 .pill--sold{display:inline-grid;place-items:center;flex:none;min-width:124px;height:54px;align-self:flex-start;margin-top:22px;margin-right:8px;border-radius:12px;font-family:var(--font-display);font-style:italic;font-weight:800;text-transform:uppercase;letter-spacing:.03em;font-size:1.15rem;color:#9aa6b2;background:linear-gradient(180deg,#2b3036,#1a1e23);border:1px solid var(--hair-2)}
@@ -1134,7 +1135,7 @@ dialog.inside{padding:0;overflow-y:auto}
   <canvas class="hero__dust" id="dust" aria-hidden="true"></canvas>
   <div class="hero__pack" id="heroPack" role="button" tabindex="0" aria-label="Get your free pack">
     <span class="hero__halo" aria-hidden="true"></span>
-    <div class="hero__packin" data-pack3d data-freepack></div>
+    <div class="hero__packin" data-pack3d></div>
     <span class="hero__tag" id="heroTag" aria-hidden="true" hidden><b>Rip me</b><svg viewBox="0 0 44 38" aria-hidden="true"><path d="M40 3C37 19 26 28 7 30"/><path d="M16 21 6 30l12 5"/></svg></span>
   </div>
   <div class="hero__copy">
@@ -1202,8 +1203,7 @@ dialog.inside{padding:0;overflow-y:auto}
       <article class="pcard pcard--big">
         <div class="viewer viewer--hat" id="hatViewer">
           <span class="viewer__tag">RL / Cap</span>
-          <span class="soldout">Sold out</span>
-          <span class="estick"><b>25,000</b><i>bonus entries</i></span>
+          <span class="estick"><span class="estick__glass" aria-hidden="true"></span><b>25,000</b><i>bonus entries</i></span>
           <img class="hatshot" src="assets/hat.webp" alt="RideLoot Series 1 Cap, a black trucker hat with the RideLoot logo" width="1200" height="1200" loading="lazy">
         </div>
         <div class="pcard__info">
@@ -2297,12 +2297,11 @@ dialog.inside{padding:0;overflow-y:auto}
   function ctaState() {
     /* packs in hand come first, however they were got: bought, by code, or free */
     if (state.packs > 0) return { label: state.packs === 1 ? 'Rip my pack' : 'Rip a pack', t: plural(state.packs, 'pack', 'packs') + ' ready', s: 'Tap to rip the top' };
-    if (!state.claimed) return { label: 'Get my free pack', t: 'Free pack', s: 'Enter your email to claim it' };
-    return { label: 'Get another pack', t: 'Buy now', s: '', say: 'Buy now' };
+    if (!state.claimed) return { label: 'Get a pack now', t: 'Get a pack', s: '', say: 'Get a pack' };
+    return { label: 'Get a pack now', t: 'Get a pack', s: '', say: 'Get a pack' };
   }
   function primary(src) {
     if (state.packs > 0) { closeDialogs(); enterRip(src || null); return; }
-    if (!state.claimed) { openDlg('gateDlg'); return; }
     openDlg('productDlg');
   }
 
@@ -2588,7 +2587,7 @@ dialog.inside{padding:0;overflow-y:auto}
     if (o) { e.preventDefault(); openDlg(o.dataset.open); return; }
     if (t.closest('[data-cta]')) primary(null);
   });
-  function packAction() { if (state.packs > 0) { closeDialogs(); enterRip(null); } else openDlg('productDlg'); }
+  function packAction() { if (state.packs > 0) { closeDialogs(); enterRip(null); } else { const s = $('pack'); if (s) s.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
   heroPack.addEventListener('click', packAction);
   heroPack.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); packAction(); } });
   /* the Packs counter is about packs you hold: rip one if you have one, otherwise show My pulls. It never asks for an email. */
