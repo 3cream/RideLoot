@@ -180,8 +180,10 @@
     // the pack is committed the moment the seal comes off: the prize is decided and recorded now
     let prize;
     if (ctx.demo) {
-      /* a free demo rip: a sample card, nothing recorded, no pack or entry used */
-      prize = pick(CONFIG.prizes);
+      /* a free demo rip: a sample card, nothing recorded, no pack or entry used.
+         because it never counts, a demo always lands rare or better (never the car) */
+      const pool = CONFIG.prizes.filter((p) => p.tier !== 'grand' && TIERS[p.tier].rank >= RANK.rare);
+      prize = pick(pool.length ? pool : CONFIG.prizes);
       ctx.no = 0;
       $('ripChip').hidden = true;
     } else if (LIVE.on) {
