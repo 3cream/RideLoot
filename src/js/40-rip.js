@@ -47,12 +47,13 @@
   function stopRain() { if (rainId) { clearInterval(rainId); rainId = 0; } }
   function setTint(tier) { ripEl.style.setProperty('--tint', TIERS[tier].color); }
 
-  function enterRip(src) {
-    if (state.packs < 1 || (R && !R.done)) return;
+  function enterRip(src, opts) {
+    const demo = !!(opts && opts.demo);
+    if ((!demo && state.packs < 1) || (R && !R.done)) return;
     if (R) endRun(R); else ripReturn = document.activeElement;
-    const ctx = R = { phase: 'enter', prize: null, no: 0, rank: 0, p: 0, dir: 1, drag: null, fast: false, dead: false, done: false, anims: [], timers: [], waiters: [] };
+    const ctx = R = { phase: 'enter', prize: null, no: 0, rank: 0, p: 0, dir: 1, drag: null, fast: false, dead: false, done: false, demo: demo, anims: [], timers: [], waiters: [] };
     const from = src ? src.getBoundingClientRect() : null;
-    const no = LIVE.on ? LIVE.next : state.opened + 1;   /* live: the next pack in the site-wide count */
+    const no = demo ? 1 : (LIVE.on ? LIVE.next : state.opened + 1);   /* live: the next pack in the site-wide count */
     rig.style.setProperty('--p', '0'); rig.style.setProperty('--sx', '0');
     rig.innerHTML = '<div class="rig__glow"></div><div class="rig__ring"></div><div class="rig__shadow"></div><div class="pkrays"></div>' +
       '<div class="rig__body"><div class="pkback"><span class="pkback__crimp"></span><span class="pkback__shade"></span></div>' + cardHTML(null, 0, '') + packArt(no) + '</div>' + GUIDE;
@@ -178,7 +179,12 @@
     if (ctx.dead) return;
     // the pack is committed the moment the seal comes off: the prize is decided and recorded now
     let prize;
-    if (LIVE.on) {
+    if (ctx.demo) {
+      /* a free demo rip: a sample card, nothing recorded, no pack or entry used */
+      prize = pick(CONFIG.prizes);
+      ctx.no = 0;
+      $('ripChip').hidden = true;
+    } else if (LIVE.on) {
       /* live: the server takes the pack, gives it its number in the site-wide count, and decides the card */
       const r = await api('open', {});
       prize = r.ok ? CONFIG.prizes.find((p) => p.id === r.prize_id) : null;
@@ -312,9 +318,14 @@
     $('ripTier').textContent = TIERS[prize.tier].label; $('ripTier').dataset.tier = prize.tier;
     $('ripName').textContent = prize.name;
     const note = $('ripNote');
-    note.textContent = grand ? (LIVE.on ? 'Pack No. ' + num(ctx.no) + '. We will contact you by email to verify and arrange the prize.' : 'Preview pull. No real prize is awarded.') : '';
-    note.hidden = !grand;
-    note.classList.toggle('is-gold', grand);
+    if (ctx.demo) {
+      note.textContent = 'Demo rip — nothing counts. Open a real pack to play for keeps.';
+      note.hidden = false; note.classList.remove('is-gold');
+    } else {
+      note.textContent = grand ? (LIVE.on ? 'Pack No. ' + num(ctx.no) + '. We will contact you by email to verify and arrange the prize.' : 'Preview pull. No real prize is awarded.') : '';
+      note.hidden = !grand;
+      note.classList.toggle('is-gold', grand);
+    }
     $('ripMeter').hidden = true;
     $('ripTitle').hidden = false;
     $('ripLive').textContent = TIERS[prize.tier].label + '. ' + prize.name + '.';

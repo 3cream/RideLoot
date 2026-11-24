@@ -405,6 +405,7 @@
     $('buyRip').hidden = false;
   });
   $('buyRip').addEventListener('click', () => { closeDialogs(); enterRip(null); });
+  $('demoBtn').addEventListener('click', () => { closeDialogs(); enterRip(null, { demo: true }); });
   /* live: hand the buyer to Stripe Checkout. Packs are added only after Stripe confirms the order. */
   async function buyLive(q) {
     const msg = $('buyMsg');
