@@ -39,9 +39,11 @@
     /* before the claim the hero pack wears the FREE sticker; after it, a tag asks to be ripped */
     document.querySelectorAll('[data-freepack]').forEach((el) => { el.dataset.free = state.claimed || n > 0 ? '0' : '1'; });
     $('heroTag').hidden = n === 0;
-    $('firstLabel').textContent = state.claimed ? 'Claimed' : 'Free';
-    $('firstBtn').setAttribute('aria-label', state.claimed ? 'Free pack claimed' : 'Claim your free pack');
-    $('firstBtn').disabled = state.claimed;
+    if ($('firstBtn')) {
+      $('firstLabel').textContent = state.claimed ? 'Claimed' : 'Free';
+      $('firstBtn').setAttribute('aria-label', state.claimed ? 'Free pack claimed' : 'Claim your free pack');
+      $('firstBtn').disabled = state.claimed;
+    }
     document.querySelectorAll('[data-freebtn]').forEach((b) => { b.classList.toggle('is-used', state.claimed); b.setAttribute('aria-label', state.claimed ? 'Free pack, already claimed' : 'Free pack'); });
     const no = 'No. ' + pad4(LIVE.on ? LIVE.next : state.opened + 1);
     document.querySelectorAll('[data-pack3d] .pk__num').forEach((el) => { el.textContent = no; });
@@ -318,7 +320,7 @@
   }
   document.querySelectorAll('[data-freebtn]').forEach((b) => b.addEventListener('click', freePack));
   /* the Free button is the one place that always means the free pack */
-  $('firstBtn').addEventListener('click', () => { if (!state.claimed) openDlg('gateDlg'); else primary(null); });
+  if ($('firstBtn')) $('firstBtn').addEventListener('click', () => { if (!state.claimed) openDlg('gateDlg'); else primary(null); });
   $('sheetList').addEventListener('click', (e) => {
     const li = e.target.closest('.sheet__item'); if (!li) return;
     li.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: narrow.matches ? 'end' : 'center' });
