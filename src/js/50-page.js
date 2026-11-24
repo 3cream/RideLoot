@@ -408,6 +408,17 @@
   });
   $('buyRip').addEventListener('click', () => { closeDialogs(); enterRip(null); });
   $('demoBtn').addEventListener('click', () => { closeDialogs(); enterRip(null, { demo: true }); });
+  /* the Series 1 Cap floats and drifts a little left/right with the pointer, like the pack */
+  (function hatParallax() {
+    const hv = $('hatViewer'); if (!hv) return;
+    const img = hv.querySelector('.hatshot'); if (!img) return;
+    const set = (x) => { const c = Math.max(-1, Math.min(1, x)); img.style.setProperty('--hx', (c * 22).toFixed(1) + 'px'); img.style.setProperty('--hr', (c * 4).toFixed(2) + 'deg'); };
+    const at = (e) => { const r = hv.getBoundingClientRect(); set(((e.clientX - r.left) / r.width - 0.5) * 2); };
+    hv.addEventListener('pointermove', at);
+    hv.addEventListener('pointerdown', (e) => { hv.classList.add('is-drag'); at(e); });
+    window.addEventListener('pointerup', () => hv.classList.remove('is-drag'));
+    hv.addEventListener('pointerleave', () => set(0));
+  })();
   /* live: hand the buyer to Stripe Checkout. Packs are added only after Stripe confirms the order. */
   async function buyLive(q) {
     const msg = $('buyMsg');
