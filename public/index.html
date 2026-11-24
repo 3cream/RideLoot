@@ -663,6 +663,10 @@ button.pill--price[disabled] > span::before{content:"\2713\00a0"}
 .hdr__pill.is-used{filter:saturate(.3)}
 button.hdr__pill{cursor:pointer}
 .nw{white-space:nowrap}
+/* standalone video band (text added later) */
+.final--video{min-height:clamp(320px,52vw,560px);align-content:center}
+.final--video .final__scrim{background:linear-gradient(180deg,rgba(4,8,12,.22),rgba(4,8,12,.4))}
+.final--video .final__glass:empty{padding:0;min-height:inherit}
 
 /* ---------- dialogs ---------- */
 dialog.dlg{padding:0;max-width:none;max-height:none;overflow:auto;overscroll-behavior:contain;color:var(--text);border:1px solid var(--hair-2);border-radius:var(--r-lg);background:linear-gradient(160deg,#18222a,#0c1216 60%,#090d10);box-shadow:0 40px 100px -20px #000}
@@ -1192,6 +1196,17 @@ dialog.inside{padding:0;overflow-y:auto}
           </div>
         </div>
       </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ prize video band ============ -->
+<section class="sec sec--tight">
+  <div class="wrap">
+    <div class="final final--video">
+      <video class="final__vid" autoplay muted loop playsinline preload="metadata" poster="assets/prize-loop.jpg" aria-hidden="true"><source src="assets/prize-loop.mp4" type="video/mp4"></video>
+      <span class="final__scrim" aria-hidden="true"></span>
+      <div class="final__glass" id="prizeBandText"></div>
     </div>
   </div>
 </section>
